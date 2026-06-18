@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export default async function AddressesPage() {
   const user = (await getCurrentUser())!;
   const addresses = await db.address.findMany({ where: { userId: user.id } });

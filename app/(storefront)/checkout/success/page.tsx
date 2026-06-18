@@ -1,11 +1,22 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
+import { Suspense } from "react";
 
 export default function SuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh]" />}>
+      <SuccessInner />
+    </Suspense>
+  );
+}
+
+function SuccessInner() {
   const orderNumber = useSearchParams().get("order");
   return (
     <div className="max-w-2xl mx-auto px-6 py-20 lg:py-32 text-center">

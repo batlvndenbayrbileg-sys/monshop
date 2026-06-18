@@ -2,6 +2,8 @@ import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { formatMNT } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   PENDING: { label: "Хүлээгдэж буй", color: "bg-yellow-100 text-yellow-900" },
   PAID: { label: "Төлсөн", color: "bg-blue-100 text-blue-900" },

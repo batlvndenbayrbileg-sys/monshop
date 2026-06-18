@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { formatMNT } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 
 export default async function AccountPage() {
