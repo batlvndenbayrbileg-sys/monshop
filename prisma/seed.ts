@@ -155,6 +155,13 @@ const PRODUCTS = [
 async function main() {
   console.log("🌸 Seeding skincare database...");
 
+  // Idempotent: skip if already seeded (safe to run on every deploy)
+  const existing = await prisma.product.count().catch(() => 0);
+  if (existing > 0) {
+    console.log(`✅ Already seeded (${existing} products) — skipping.`);
+    return;
+  }
+
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.cartItem.deleteMany();
