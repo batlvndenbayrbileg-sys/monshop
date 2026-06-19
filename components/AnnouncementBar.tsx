@@ -14,7 +14,7 @@ export function AnnouncementBar() {
   // Duplicate for seamless mobile marquee
   const items = [...BADGES, ...BADGES];
   return (
-    <div className="text-white" style={{ background: "linear-gradient(90deg, #e91e63 0%, #f06292 100%)" }}>
+    <div className="hidden lg:block text-white" style={{ background: "linear-gradient(90deg, #e91e63 0%, #f06292 100%)" }}>
       {/* Desktop — static row */}
       <div className="hidden lg:block max-w-8xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between gap-6 py-2.5">

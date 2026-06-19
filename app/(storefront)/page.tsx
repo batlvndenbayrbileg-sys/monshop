@@ -7,20 +7,11 @@ import { CustomerReviews } from "@/components/CustomerReviews";
 import { FAQ } from "@/components/FAQ";
 import { PerksBar } from "@/components/PerksBar";
 import { SustainabilityStory } from "@/components/SustainabilityStory";
+import { MobileHome } from "@/components/MobileHome";
 
 export const dynamic = "force-dynamic";
 
-async function getFeatured() {
-  const products = await db.product.findMany({
-    where: { status: "ACTIVE" },
-    take: 8,
-    orderBy: { reviewCount: "desc" },
-    include: {
-      images: { take: 2, orderBy: { position: "asc" } },
-      variants: { select: { color: true, colorHex: true } },
-      category: true,
-    },
-  });
+function mapProducts(products: any[]) {
   return products.map((p) => ({
     id: p.id,
     slug: p.slug,
@@ -32,24 +23,64 @@ async function getFeatured() {
     rating: p.rating,
     reviewCount: p.reviewCount,
     image: p.images[0]?.url,
-    images: p.images.map((i) => i.url),
+    images: p.images.map((i: any) => i.url),
     colors: Array.from(
-      new Map(p.variants.map((v) => [v.colorHex, { name: v.color, hex: v.colorHex }])).values()
+      new Map(p.variants.map((v: any) => [v.colorHex, { name: v.color, hex: v.colorHex }])).values()
     ),
   }));
 }
 
+async function getData() {
+  const [featured, all, categories] = await Promise.all([
+    db.product.findMany({
+      where: { status: "ACTIVE" },
+      take: 8,
+      orderBy: { reviewCount: "desc" },
+      include: {
+        images: { take: 2, orderBy: { position: "asc" } },
+        variants: { select: { color: true, colorHex: true } },
+        category: true,
+      },
+    }),
+    db.product.findMany({
+      where: { status: "ACTIVE" },
+      orderBy: { createdAt: "desc" },
+      include: {
+        images: { take: 1, orderBy: { position: "asc" } },
+        variants: { select: { color: true, colorHex: true } },
+        category: true,
+      },
+    }),
+    db.category.findMany({ orderBy: { name: "asc" } }),
+  ]);
+  return {
+    featured: mapProducts(featured),
+    all: mapProducts(all),
+    categories: categories.map((c) => ({ name: c.name, slug: c.slug })),
+  };
+}
+
 export default async function HomePage() {
-  const products = await getFeatured();
+  const { featured, all, categories } = await getData();
   return (
-    <HomeScroll>
-      <ShopByCategories />
-      <PromoBanner />
-      <FeaturedProducts products={products} />
-      <CustomerReviews />
-      <FAQ />
-      <SustainabilityStory />
-      <PerksBar />
-    </HomeScroll>
+    <>
+      {/* Mobile — clean skincare-app browse */}
+      <div className="lg:hidden">
+        <MobileHome products={all} categories={categories} />
+      </div>
+
+      {/* Desktop — marketing experience */}
+      <div className="hidden lg:block">
+        <HomeScroll>
+          <ShopByCategories />
+          <PromoBanner />
+          <FeaturedProducts products={featured} />
+          <CustomerReviews />
+          <FAQ />
+          <SustainabilityStory />
+          <PerksBar />
+        </HomeScroll>
+      </div>
+    </>
   );
 }
