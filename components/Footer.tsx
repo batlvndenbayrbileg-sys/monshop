@@ -21,7 +21,7 @@ const SOCIALS = [
 
 export function Footer() {
   return (
-    <footer className="bg-bg-soft py-20 lg:py-24">
+    <footer className="hidden lg:block bg-bg-soft py-20 lg:py-24">
       <div className="max-w-2xl mx-auto px-6 text-center">
         {/* Logo */}
         <motion.div
