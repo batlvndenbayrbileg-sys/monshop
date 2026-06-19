@@ -51,6 +51,29 @@ body {
   .card-3d:hover {
     transform: none;
   }
+
+  /* Calm the decorative noise — clean concept-app look */
+  .drift,
+  .liquid-blob,
+  .liquid-blob-slow {
+    opacity: 0.45;
+  }
+
+  /* Cleaner product cards: flat soft surface, gentle single shadow */
+  .product-card .bg-card-pink {
+    background: #fbf5f6;
+    box-shadow: 0 6px 20px -10px rgba(var(--shadow-pink), 0.18);
+  }
+
+  /* Calmer eyebrow tracking so labels don't feel busy */
+  .eyebrow {
+    letter-spacing: 0.14em;
+  }
+
+  /* Generous, even grid gutters on mobile */
+  .grid {
+    row-gap: 1.5rem;
+  }
 }
 
 * {
