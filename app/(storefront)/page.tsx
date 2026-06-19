@@ -1,13 +1,17 @@
 import { db } from "@/lib/db";
 import { HomeScroll } from "@/components/HomeScroll";
 import { ShopByCategories } from "@/components/ShopByCategories";
-import { PromoBanner } from "@/components/PromoBanner";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { CustomerReviews } from "@/components/CustomerReviews";
-import { FAQ } from "@/components/FAQ";
-import { PerksBar } from "@/components/PerksBar";
-import { SustainabilityStory } from "@/components/SustainabilityStory";
 import { MobileHome } from "@/components/MobileHome";
+import {
+  BrandStory,
+  Results,
+  WhyChooseUs,
+  TrendingEditorial,
+  InstagramGallery,
+  NewsletterCTA,
+} from "@/components/Editorial";
 
 export const dynamic = "force-dynamic";
 
@@ -69,16 +73,18 @@ export default async function HomePage() {
         <MobileHome products={all} categories={categories} />
       </div>
 
-      {/* Desktop — marketing experience */}
+      {/* Desktop — award-winning editorial experience */}
       <div className="hidden lg:block">
         <HomeScroll>
           <ShopByCategories />
-          <PromoBanner />
           <FeaturedProducts products={featured} />
+          <BrandStory />
+          <Results />
+          <WhyChooseUs />
+          <TrendingEditorial />
           <CustomerReviews />
-          <FAQ />
-          <SustainabilityStory />
-          <PerksBar />
+          <InstagramGallery />
+          <NewsletterCTA />
         </HomeScroll>
       </div>
     </>
