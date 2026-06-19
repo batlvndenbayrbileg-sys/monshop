@@ -15,7 +15,9 @@ import {
 
 export const dynamic = "force-dynamic";
 
-function mapProducts(products: any[]) {
+import type { Product } from "@/components/ProductCard";
+
+function mapProducts(products: any[]): Product[] {
   return products.map((p) => ({
     id: p.id,
     slug: p.slug,
@@ -27,10 +29,10 @@ function mapProducts(products: any[]) {
     rating: p.rating,
     reviewCount: p.reviewCount,
     image: p.images[0]?.url,
-    images: p.images.map((i: any) => i.url),
+    images: p.images.map((i: any) => i.url) as string[],
     colors: Array.from(
       new Map(p.variants.map((v: any) => [v.colorHex, { name: v.color, hex: v.colorHex }])).values()
-    ),
+    ) as { name: string; hex: string }[],
   }));
 }
 
