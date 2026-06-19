@@ -34,18 +34,13 @@ export function MobileCategories({ categories }: { categories: Cat[] }) {
       </Link>
 
       {/* Promo banner */}
-      <Link
-        href="/sale"
-        className="relative block rounded-[24px] overflow-hidden mb-6 p-5 min-h-[140px]"
-        style={{ background: "linear-gradient(135deg, #F8DCE0 0%, #F3E3D8 100%)" }}
-      >
-        <div className="absolute -bottom-6 -right-4 w-40 h-40">
-          <Image src="/banner.png" alt="" fill className="object-contain" />
-        </div>
-        <div className="relative max-w-[60%]">
-          <div className="font-serif text-xl leading-tight mb-1">30% хүртэл хямдрал</div>
-          <div className="font-sans text-xs text-ink-muted mb-4">сонгомол арчилгааны бараанд</div>
-          <span className="inline-flex items-center gap-1.5 bg-white rounded-pill px-4 py-2 font-sans text-xs font-semibold">
+      <Link href="/sale" className="relative block rounded-[24px] overflow-hidden mb-6 min-h-[150px]">
+        <Image src="/banner.png" alt="" fill sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
+        <div className="relative p-5 text-white h-full flex flex-col justify-center min-h-[150px] max-w-[68%]">
+          <div className="font-serif text-[22px] leading-tight mb-1">30% хүртэл хямдрал</div>
+          <div className="font-sans text-xs text-white/80 mb-4">сонгомол арчилгааны бараанд</div>
+          <span className="inline-flex items-center gap-1.5 bg-white text-ink rounded-pill px-4 py-2 font-sans text-xs font-semibold self-start">
             Үзэх <span>→</span>
           </span>
         </div>
@@ -75,23 +70,16 @@ export function MobileCategories({ categories }: { categories: Cat[] }) {
             <Link
               key={c.slug}
               href={`/categories/${c.slug}`}
-              className="relative flex items-center justify-between rounded-[20px] overflow-hidden p-4 min-h-[92px]"
-              style={{ background: "linear-gradient(135deg, #F7E6E8 0%, #FBEFEA 100%)" }}
+              className="flex items-center gap-3 rounded-[20px] overflow-hidden p-2.5 bg-white shadow-sm"
             >
-              <div className="relative z-10">
-                <div className="font-serif text-[17px] leading-tight">{c.name}</div>
-                <div className="font-sans text-[11px] text-ink-muted mt-0.5">{c.count}+ бараа</div>
-              </div>
-              <div className="relative w-16 h-16 shrink-0">
+              <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-[#F2E6DF]">
                 {CATEGORY_IMAGES[c.slug] && (
-                  <Image
-                    src={CATEGORY_IMAGES[c.slug]}
-                    alt={c.name}
-                    fill
-                    sizes="64px"
-                    className="object-contain drop-shadow-md"
-                  />
+                  <Image src={CATEGORY_IMAGES[c.slug]} alt={c.name} fill sizes="64px" className="object-cover" />
                 )}
+              </div>
+              <div className="min-w-0">
+                <div className="font-serif text-[16px] leading-tight truncate">{c.name}</div>
+                <div className="font-sans text-[11px] text-ink-muted mt-0.5">{c.count}+ бараа</div>
               </div>
             </Link>
           ))}

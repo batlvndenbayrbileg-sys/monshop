@@ -165,18 +165,13 @@ export function MobileHome({ products, categories }: { products: P[]; categories
 
       {/* OUR PROMISE editorial */}
       <div className="px-5 mt-8">
-        <Link href="/story" className="relative block rounded-[24px] overflow-hidden p-6 min-h-[200px]"
-          style={{ background: "linear-gradient(135deg, #E7D8CE, #EFE2DA)" }}>
-          <div className="absolute right-0 bottom-0 w-[42%] h-full opacity-90">
-            <Image src="/banner.png" alt="" fill className="object-contain object-bottom" />
-          </div>
-          <div className="relative max-w-[60%]">
-            <div className="font-sans text-[10px] font-semibold tracking-[0.18em] uppercase text-ink-muted mb-2">Бидний амлалт</div>
-            <div className="font-serif text-[24px] leading-tight mb-3">Цэвэр гоо сайхан,<br />бодит үр дүн</div>
-            <p className="font-sans text-[12px] text-ink-muted leading-relaxed mb-4">
-              Байгалийн хүч ба шинжлэх ухааны нэгдэлд бид итгэдэг.
-            </p>
-            <span className="font-sans text-[11px] font-semibold tracking-widest uppercase border-b border-ink pb-0.5">Дэлгэрэнгүй →</span>
+        <Link href="/story" className="relative block rounded-[24px] overflow-hidden min-h-[220px]">
+          <Image src="/hero.png" alt="" fill sizes="100vw" className="object-cover object-top" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
+          <div className="relative p-6 max-w-[68%] text-white h-full flex flex-col justify-end min-h-[220px]">
+            <div className="font-sans text-[10px] font-semibold tracking-[0.18em] uppercase text-white/70 mb-2">Бидний амлалт</div>
+            <div className="font-serif text-[26px] leading-tight mb-3">Цэвэр гоо сайхан,<br />бодит үр дүн</div>
+            <span className="font-sans text-[11px] font-semibold tracking-widest uppercase border-b border-white pb-0.5 self-start">Дэлгэрэнгүй →</span>
           </div>
         </Link>
       </div>
@@ -184,15 +179,13 @@ export function MobileHome({ products, categories }: { products: P[]; categories
       {/* TRENDING NOW */}
       <div className="px-5 mt-8">
         <SectionHead title="Тренд" />
-        <Link href="/shop" className="relative block rounded-[24px] overflow-hidden p-6 min-h-[170px]"
-          style={{ background: "linear-gradient(135deg, #ECE0D6, #F3E9E2)" }}>
-          <div className="absolute right-2 bottom-0 w-[48%] h-[92%]">
-            <Image src="/product3.png" alt="" fill className="object-contain object-bottom drop-shadow-xl" />
-          </div>
-          <div className="relative max-w-[55%]">
-            <div className="font-serif text-[24px] leading-tight mb-2">Хаврын гэрэлт цуглуулга</div>
-            <p className="font-sans text-[12px] text-ink-muted mb-4">Хөнгөн найрлага, гэрэлтэй арьс.</p>
-            <span className="font-sans text-[11px] font-semibold tracking-widest uppercase border-b border-ink pb-0.5">Цуглуулга →</span>
+        <Link href="/shop" className="relative block rounded-[24px] overflow-hidden min-h-[180px]">
+          <Image src="/product1.png" alt="" fill sizes="100vw" className="object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
+          <div className="relative p-6 max-w-[64%] text-white h-full flex flex-col justify-end min-h-[180px]">
+            <div className="font-serif text-[25px] leading-tight mb-2">Хаврын гэрэлт цуглуулга</div>
+            <p className="font-sans text-[12px] text-white/80 mb-4">Хөнгөн найрлага, гэрэлтэй арьс.</p>
+            <span className="font-sans text-[11px] font-semibold tracking-widest uppercase border-b border-white pb-0.5 self-start">Цуглуулга →</span>
           </div>
         </Link>
       </div>
@@ -276,7 +269,7 @@ export function MobileHome({ products, categories }: { products: P[]; categories
             <Link key={x.t} href="/shop" className="block">
               {/* Image tile */}
               <div className="relative aspect-square rounded-2xl overflow-hidden mb-2 bg-[#F2E6DF]">
-                <Image src={x.img} alt={x.t} fill sizes="120px" className="object-contain p-3.5" />
+                <Image src={x.img} alt={x.t} fill sizes="120px" className="object-cover" />
               </div>
               {/* Clean text below — no overlap */}
               <div className="font-sans text-[12px] font-semibold leading-tight">{x.t}</div>
