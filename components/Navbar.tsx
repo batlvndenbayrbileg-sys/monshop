@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, User, ShoppingBag, Menu, LogOut, Sparkles, Heart, X } from "lucide-react";
+import { Search, User, ShoppingBag, Menu, LogOut, Heart, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
