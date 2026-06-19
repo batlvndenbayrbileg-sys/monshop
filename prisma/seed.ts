@@ -127,8 +127,15 @@ async function main() {
     catId[c.slug] = created.id;
   }
 
-  const slugify = (s: string, i: number) =>
-    s.toLowerCase().replace(/[^a-z0-9а-яөүё]+/gi, "-").replace(/(^-|-$)/g, "").slice(0, 40) + "-" + i;
+  // ASCII-only slug (Cyrillic stripped) so URLs are clean and never 404 on encoding
+  const slugify = (s: string, i: number) => {
+    const ascii = s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+      .slice(0, 32);
+    return (ascii || "product") + "-" + i;
+  };
 
   let idx = 0;
   for (const p of PRODUCTS) {
