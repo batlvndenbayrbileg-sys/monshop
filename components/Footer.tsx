@@ -9,7 +9,7 @@ const LINKS = [
   { label: "Дэлгүүр", href: "/shop" },
   { label: "Ангилал", href: "/categories" },
   { label: "Захиалга", href: "/account/orders" },
-  { label: "Хүсэл", href: "/account/favorites" },
+  { label: "Хүсэл", href: "/wishlist" },
 ];
 
 const SOCIALS = [

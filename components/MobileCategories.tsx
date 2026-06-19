@@ -19,7 +19,7 @@ export function MobileCategories({ categories }: { categories: Cat[] }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <h1 className="font-serif text-[26px] tracking-tight">Ангиллаар сонгох</h1>
-        <Link href="/account/favorites" className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+        <Link href="/wishlist" className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
           <ShoppingBag className="w-[18px] h-[18px]" strokeWidth={1.8} />
         </Link>
       </div>

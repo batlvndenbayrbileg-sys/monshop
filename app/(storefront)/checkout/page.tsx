@@ -100,11 +100,9 @@ export default function CheckoutPage() {
               <Input label="ДҮҮРЭГ/СУМ" required value={form.shippingDistrict}
                 onChange={(v) => setForm({ ...form, shippingDistrict: v })} />
               <div className="col-span-2">
-                <Input label="ХАЯГ" required value={form.shippingStreet}
+                <Input label="ХАЯГ (гудамж, байр, тоот)" required value={form.shippingStreet}
                   onChange={(v) => setForm({ ...form, shippingStreet: v })} />
               </div>
-              <Input label="ЗИП КОД" value={form.shippingZip}
-                onChange={(v) => setForm({ ...form, shippingZip: v })} />
             </div>
             <div className="mt-4">
               <label className="text-xs font-semibold tracking-widest mb-2 block">
@@ -183,7 +181,8 @@ export default function CheckoutPage() {
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={loading || items.length === 0}
-            className="w-full bg-ink text-ink-inverse rounded-pill py-4 text-sm font-semibold tracking-wide hover:bg-ink/85 transition disabled:opacity-50"
+            className="btn-3d w-full text-white rounded-pill py-4 text-sm font-semibold tracking-wide transition disabled:opacity-50"
+            style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}
           >
             {loading ? "БОЛОВСРУУЛЖ БАЙНА..." : "ЗАХИАЛАХ"}
           </motion.button>

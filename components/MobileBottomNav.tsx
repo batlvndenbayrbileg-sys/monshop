@@ -16,7 +16,7 @@ export function MobileBottomNav() {
   const items = [
     { icon: Home, label: "Нүүр", href: "/" },
     { icon: LayoutGrid, label: "Ангилал", href: "/categories" },
-    { icon: Heart, label: "Хүсэл", href: "/account/favorites", badge: wishlistCount },
+    { icon: Heart, label: "Хүсэл", href: "/wishlist", badge: wishlistCount },
     { icon: ShoppingBag, label: "Сагс", onClick: openCart, badge: cartCount },
     { icon: User, label: "Профайл", href: "/account" },
   ];

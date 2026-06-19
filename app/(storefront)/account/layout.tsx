@@ -20,7 +20,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
           {[
             { href: "/account", label: "Тойм" },
             { href: "/account/orders", label: "Захиалга" },
-            { href: "/account/favorites", label: "Хүслийн жагсаалт" },
+            { href: "/wishlist", label: "Хүслийн жагсаалт" },
             { href: "/account/addresses", label: "Хаягууд" },
             { href: "/account/settings", label: "Тохиргоо" },
           ].map((l) => (

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { formatMNT } from "@/lib/utils";
 import { useWishlist } from "@/lib/wishlist-store";
 import {
@@ -67,11 +68,17 @@ export function MobileHome({ products, categories }: { products: P[]; categories
     <div className="bg-[#FAF6F2] pb-4">
       {/* Search */}
       <div className="px-5 pt-3 pb-4">
-        <Link href="/shop" className="flex items-center gap-3 bg-white rounded-pill px-4 py-3 shadow-sm">
-          <Search className="w-[18px] h-[18px] text-ink-subtle" strokeWidth={1.8} />
-          <span className="flex-1 font-sans text-sm text-ink-subtle">Бараа, брэнд хайх...</span>
+        <form action="/shop" className="flex items-center gap-3 bg-white rounded-pill px-4 py-3 shadow-sm">
+          <button type="submit" aria-label="Хайх">
+            <Search className="w-[18px] h-[18px] text-ink-subtle" strokeWidth={1.8} />
+          </button>
+          <input
+            name="q"
+            placeholder="Бараа, брэнд хайх..."
+            className="flex-1 bg-transparent font-sans text-sm outline-none placeholder:text-ink-subtle"
+          />
           <Mic className="w-[18px] h-[18px] text-brand-pink" strokeWidth={1.8} />
-        </Link>
+        </form>
       </div>
 
       {/* HERO */}
@@ -285,33 +292,50 @@ export function MobileHome({ products, categories }: { products: P[]; categories
         </div>
       </div>
 
-      {/* TESTIMONIAL */}
+      {/* TESTIMONIALS — looped carousel */}
       <div className="px-5 mt-9">
         <SectionHead title="Хэрэглэгчид" href="/story" />
-        <div className="bg-[#F2EAE3] rounded-[24px] p-5 flex gap-4 items-center">
-          <div className="relative w-20 h-24 rounded-2xl overflow-hidden shrink-0 bg-white">
-            <Image src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80" alt="" fill sizes="80px" className="object-cover" />
-          </div>
-          <div className="flex-1">
-            <div className="text-brand-gold text-sm mb-1.5">★★★★★</div>
-            <p className="font-serif text-[14px] leading-snug mb-2">“Арьс минь хэзээ ч ийм гэрэлтэй байгаагүй. Үнэхээр гайхалтай.”</p>
-            <div className="font-sans text-[11px] text-ink-muted">— Сараа Б.</div>
-          </div>
+        <TestimonialCarousel />
+      </div>
+    </div>
+  );
+}
+
+const TESTIMONIALS = [
+  { name: "Сараа Б.", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80", text: "Арьс минь хэзээ ч ийм гэрэлтэй байгаагүй. Үнэхээр гайхалтай." },
+  { name: "Цэцгээ М.", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80", text: "Vitamin C сийрум 2 долоо хоногт толбыг минь арилгасан. Санал болгож байна!" },
+  { name: "Энхтуяа Г.", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&q=80", text: "Чийгшүүлэгч нь хөнгөн, наалдамхай биш. Өдөр бүр хэрэглэдэг боллоо." },
+  { name: "Норжмаа Ч.", img: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=300&q=80", text: "Багц нь бэлэгт төгс. Чанар, баглаа боодол бүгд гайхалтай." },
+];
+
+function TestimonialCarousel() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setI((p) => (p + 1) % TESTIMONIALS.length), 4000);
+    return () => clearInterval(t);
+  }, []);
+  const t = TESTIMONIALS[i];
+  return (
+    <div>
+      <div className="bg-[#F2EAE3] rounded-[24px] p-5 flex gap-4 items-center min-h-[132px]">
+        <div className="relative w-20 h-24 rounded-2xl overflow-hidden shrink-0 bg-white">
+          <Image key={t.img} src={t.img} alt="" fill sizes="80px" className="object-cover animate-[fadeIn_0.5s_ease]" />
+        </div>
+        <div className="flex-1">
+          <div className="text-brand-gold text-sm mb-1.5">★★★★★</div>
+          <p className="font-serif text-[14px] leading-snug mb-2">“{t.text}”</p>
+          <div className="font-sans text-[11px] text-ink-muted">— {t.name}</div>
         </div>
       </div>
-
-      {/* NEWSLETTER */}
-      <div className="px-5 mt-9">
-        <div className="bg-ink text-white rounded-[24px] p-6 text-center">
-          <div className="font-sans text-[10px] font-semibold tracking-[0.18em] uppercase text-white/50 mb-3">Манайхтай нэгд</div>
-          <h3 className="font-serif text-[24px] leading-tight mb-2">Онцгой санал хүлээж ав</h3>
-          <p className="font-sans text-[12px] text-white/60 mb-5">Эхний захиалгад 15% хямдрал.</p>
-          <form className="space-y-2.5">
-            <input type="email" placeholder="Имэйл хаяг" className="w-full bg-white/10 border border-white/20 rounded-pill px-5 py-3 font-sans text-sm text-white placeholder:text-white/40 outline-none focus:border-white/50" />
-            <button className="w-full bg-white text-ink rounded-pill py-3 font-sans text-xs font-bold tracking-widest uppercase">Бүртгүүлэх</button>
-          </form>
-          <p className="font-sans text-[10px] text-white/40 mt-3">Спам байхгүй. Хүссэн үедээ цуцлаарай.</p>
-        </div>
+      <div className="flex justify-center gap-1.5 mt-3">
+        {TESTIMONIALS.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => setI(idx)}
+            className={`h-1.5 rounded-full transition-all ${idx === i ? "w-5 bg-brand-pink" : "w-1.5 bg-brand-pink/30"}`}
+            aria-label={`${idx + 1}`}
+          />
+        ))}
       </div>
     </div>
   );

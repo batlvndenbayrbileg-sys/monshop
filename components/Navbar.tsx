@@ -119,7 +119,7 @@ export function Navbar() {
               </Link>
 
               <Link
-                href="/account/favorites"
+                href="/wishlist"
                 className="glass-orb w-10 h-10 rounded-full flex items-center justify-center relative"
                 aria-label="Wishlist"
               >
@@ -169,7 +169,7 @@ export function Navbar() {
                       {[
                         { href: "/account", label: "Миний хуудас" },
                         { href: "/account/orders", label: "Захиалга" },
-                        { href: "/account/favorites", label: "Хүслийн жагсаалт" },
+                        { href: "/wishlist", label: "Хүслийн жагсаалт" },
                         { href: "/account/addresses", label: "Хаягууд" },
                       ].map((l) => (
                         <Link
