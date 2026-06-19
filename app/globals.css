@@ -15,6 +15,42 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Stop decorative blobs / floating cards from causing horizontal scroll on mobile */
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Remove blue tap flash on mobile — feels native + elegant */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ========== MOBILE ELEGANCE LAYER ========== */
+@media (max-width: 640px) {
+  /* Tighter, more breathable vertical rhythm */
+  .py-16 { padding-top: 3rem; padding-bottom: 3rem; }
+  .py-20 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+  .py-24 { padding-top: 4rem; padding-bottom: 4rem; }
+  .py-28 { padding-top: 4rem; padding-bottom: 4rem; }
+  .py-32 { padding-top: 4.5rem; padding-bottom: 4.5rem; }
+
+  /* Calmer display headings — minimal, not overwhelming */
+  .font-serif {
+    letter-spacing: -0.02em;
+  }
+
+  /* Softer 3D shadows on mobile (less heavy = more elegant) */
+  .shadow-3d,
+  .shadow-float {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.8) inset,
+      0 8px 24px -8px rgba(var(--shadow-pink), 0.16);
+  }
+
+  /* Disable hover-tilt jitter on touch (no real hover) */
+  .card-3d:hover {
+    transform: none;
+  }
 }
 
 * {
