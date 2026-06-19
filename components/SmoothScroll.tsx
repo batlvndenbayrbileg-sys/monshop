@@ -5,22 +5,27 @@ import Lenis from "lenis";
 
 export function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
+    // Desktop: smooth wheel. Mobile/touch: use native scrolling (smoothest, no jank).
+    const isTouch =
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none), (pointer: coarse)").matches;
+
+    if (isTouch) return; // native momentum scroll on phones — buttery, no stutter
+
     const lenis = new Lenis({
-      duration: 1.6,
-      // slower, silky ease-out — long gentle glide
+      duration: 1.1,
       easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
-      lerp: 0.08,
+      lerp: 0.1,
       smoothWheel: true,
-      wheelMultiplier: 0.85,
-      touchMultiplier: 1.4,
-      syncTouch: true,
+      wheelMultiplier: 1,
+      syncTouch: false,
     });
 
     let rafId: number;
-    function raf(time: number) {
+    const raf = (time: number) => {
       lenis.raf(time);
       rafId = requestAnimationFrame(raf);
-    }
+    };
     rafId = requestAnimationFrame(raf);
 
     return () => {

@@ -75,7 +75,7 @@ export function Navbar() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center shrink-0">
-              <Image src="/logo.png" alt="monshop" width={140} height={40} priority className="h-8 lg:h-9 w-auto object-contain" />
+              <Image src="/logo.png" alt="monshop" width={160} height={48} priority className="h-10 lg:h-11 w-auto object-contain" />
             </Link>
 
             {/* Desktop nav links */}
