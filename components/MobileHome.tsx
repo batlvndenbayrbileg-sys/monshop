@@ -27,7 +27,8 @@ type Cat = { name: string; slug: string };
 
 const CAT_IMG: Record<string, string> = {
   cleansers: "/product5.png", moisturizers: "/product2.png", serums: "/product1.png",
-  sunscreen: "/product3.png", masks: "/product4.png", "lip-care": "/product2.png",
+  sunscreen: "/product3.png", masks: "/product4.png", toners: "/product5.png",
+  "eye-care": "/product1.png", "lip-care": "/product2.png",
 };
 
 function SectionHead({ title, href = "/shop" }: { title: string; href?: string }) {

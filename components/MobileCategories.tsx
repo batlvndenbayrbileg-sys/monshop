@@ -13,8 +13,11 @@ const CATEGORY_IMAGES: Record<string, string> = {
   serums: "/product1.png",
   sunscreen: "/product3.png",
   masks: "/product4.png",
+  toners: "/product5.png",
+  "eye-care": "/product1.png",
   "lip-care": "/product2.png",
 };
+const FALLBACK_IMG = "/product1.png";
 
 const CAT_DESC: Record<string, string> = {
   cleansers: "Зөөлөн цэвэрлэгч",
@@ -22,6 +25,8 @@ const CAT_DESC: Record<string, string> = {
   serums: "Идэвхт сийрум",
   sunscreen: "Нарны хамгаалалт",
   masks: "Эрчимт маск",
+  toners: "Тэнцвэржүүлэгч",
+  "eye-care": "Нүдний арчилгаа",
   "lip-care": "Уруулын арчилгаа",
 };
 
@@ -73,7 +78,7 @@ export function MobileCategories({ categories }: { categories: Cat[] }) {
           className="px-5 mb-4"
         >
           <Link href={`/categories/${featured.slug}`} className="relative block aspect-[16/10] rounded-[26px] overflow-hidden">
-            <Image src={CATEGORY_IMAGES[featured.slug]} alt={featured.name} fill sizes="100vw" className="object-cover" priority />
+            <Image src={CATEGORY_IMAGES[featured.slug] ?? FALLBACK_IMG} alt={featured.name} fill sizes="100vw" className="object-cover" priority />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <div className="absolute top-4 left-4 bg-white/90 backdrop-blur rounded-full px-3 py-1 font-sans text-[10px] font-semibold tracking-wide">
               ОНЦЛОХ
@@ -103,7 +108,7 @@ export function MobileCategories({ categories }: { categories: Cat[] }) {
           >
             <Link href={`/categories/${c.slug}`} className="group relative block aspect-[4/5] rounded-[22px] overflow-hidden">
               <Image
-                src={CATEGORY_IMAGES[c.slug]}
+                src={(CATEGORY_IMAGES[c.slug] ?? FALLBACK_IMG)}
                 alt={c.name}
                 fill
                 sizes="50vw"

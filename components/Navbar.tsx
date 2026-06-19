@@ -65,18 +65,19 @@ export function Navbar() {
           }`}
         >
           <div className="flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 h-16 lg:h-[72px]">
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden glass-orb w-10 h-10 rounded-full flex items-center justify-center"
-              aria-label="Menu"
-            >
-              <Menu className="w-4 h-4" strokeWidth={1.8} />
-            </button>
-
-            {/* Logo */}
-            <Link href="/" className="flex items-center shrink-0">
-              <Image src="/logo.png" alt="monshop" width={160} height={48} priority className="h-10 lg:h-11 w-auto object-contain" />
-            </Link>
+            {/* Left: menu (mobile) + logo */}
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="lg:hidden glass-orb w-10 h-10 rounded-full flex items-center justify-center"
+                aria-label="Menu"
+              >
+                <Menu className="w-4 h-4" strokeWidth={1.8} />
+              </button>
+              <Link href="/" className="flex items-center">
+                <Image src="/logo.png" alt="monshop" width={160} height={48} priority className="h-9 lg:h-11 w-auto object-contain" />
+              </Link>
+            </div>
 
             {/* Desktop nav links */}
             <ul className="hidden lg:flex items-center gap-1 flex-1 justify-center">

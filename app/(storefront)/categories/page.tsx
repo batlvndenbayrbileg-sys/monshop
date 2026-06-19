@@ -15,6 +15,8 @@ const CATEGORY_IMAGES: Record<string, string> = {
   serums: "/product1.png",
   sunscreen: "/product3.png",
   masks: "/product4.png",
+  toners: "/product5.png",
+  "eye-care": "/product1.png",
   "lip-care": "/product2.png",
 };
 
