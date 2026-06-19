@@ -3,10 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart } from "lucide-react";
 import toast from "react-hot-toast";
 import { formatMNT } from "@/lib/utils";
-import { Tilt3D } from "./Tilt3D";
 import { useWishlist } from "@/lib/wishlist-store";
 
 export type Product = {
@@ -30,119 +29,96 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
   const imgs = product.images?.length ? product.images : product.image ? [product.image] : [];
   const primary = imgs[0];
   const secondary = imgs[1] ?? imgs[0];
+  // first variant label (e.g. "30 мл") for the subtle subtitle
+  const volume = product.colors?.[0]?.name;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.7, delay: (index % 4) * 0.07, ease: [0.22, 1, 0.36, 1] }}
-      className="product-card card-3d group"
+      transition={{ duration: 0.6, delay: (index % 4) * 0.06, ease: [0.22, 1, 0.36, 1] }}
+      className="product-card group"
     >
-      <Tilt3D max={6} className="rounded-3xl">
-        <Link href={`/products/${product.slug}`} className="block">
-          {/* Image card with 3D depth */}
-          <div className="relative aspect-square bg-card-pink rounded-3xl overflow-hidden mb-5 shadow-3d edge-highlight">
-            {/* Badge */}
-            {product.badge && (
-              <div
-                style={{ transform: "translateZ(40px)" }}
-                className={`absolute top-4 left-4 z-20 text-[10px] font-semibold tracking-widest uppercase px-3 py-1.5 rounded-full shadow-md ${
-                  product.badge === "ХЯМДРАЛ"
-                    ? "bg-gradient-to-b from-rose-400 to-brand-pink text-white"
-                    : product.badge === "ШИНЭ"
-                      ? "bg-gradient-to-b from-zinc-700 to-ink text-white"
-                      : "bg-white text-ink"
-                }`}
-              >
-                {product.badge}
-              </div>
-            )}
-
-            {/* Heart button - floats above */}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                const added = toggle({
-                  id: product.id,
-                  slug: product.slug,
-                  name: product.name,
-                  category: product.category,
-                  price: product.price,
-                  oldPrice: product.oldPrice,
-                  image: primary,
-                });
-                toast.success(added ? "Хүслийн жагсаалтанд нэмэгдлээ" : "Хүслийн жагсаалтнаас хасагдлаа");
-              }}
-              style={{ transform: "translateZ(50px)" }}
-              className={`absolute top-4 right-4 z-20 w-10 h-10 rounded-full flex items-center justify-center transition shadow-soft-pink ${
-                liked ? "bg-brand-pink text-white" : "bg-white text-ink hover:bg-brand-blush"
+      <Link href={`/products/${product.slug}`} className="block">
+        {/* Image */}
+        <div className="relative aspect-[4/5] bg-bg-soft rounded-[20px] overflow-hidden">
+          {product.badge && (
+            <div
+              className={`absolute top-3 left-3 z-10 text-[10px] font-sans font-semibold tracking-wide px-2.5 py-1 rounded-full ${
+                product.badge === "ХЯМДРАЛ"
+                  ? "bg-brand-pink text-white"
+                  : product.badge === "ШИНЭ"
+                    ? "bg-ink text-white"
+                    : "bg-white text-ink"
               }`}
-              aria-label="Wishlist"
             >
-              <Heart className={`w-4 h-4 ${liked ? "fill-current" : ""}`} strokeWidth={1.8} />
-            </button>
-
-            {primary && (
-              <Image
-                src={primary}
-                alt={product.name}
-                fill
-                sizes="(max-width: 768px) 50vw, 25vw"
-                className="product-image product-image-primary object-cover absolute inset-0"
-              />
-            )}
-            {secondary && secondary !== primary && (
-              <Image
-                src={secondary}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 50vw, 25vw"
-                className="product-image product-image-secondary object-cover absolute inset-0"
-              />
-            )}
-          </div>
-
-          <div className="px-1" style={{ transform: "translateZ(20px)" }}>
-            {product.category && (
-              <div className="text-[11px] text-ink-muted mb-1">{product.category}</div>
-            )}
-            <h3 className="font-semibold text-sm mb-1.5 truncate">{product.name}</h3>
-
-            {product.rating && (
-              <div className="flex items-center gap-1.5 mb-2">
-                <span className="text-brand-pink text-xs">★★★★★</span>
-                <span className="text-xs text-ink-subtle">
-                  ({product.reviewCount ?? product.rating.toFixed(1)})
-                </span>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between mt-2">
-              <div className="flex items-baseline gap-2">
-                <span className={`font-semibold ${product.oldPrice ? "text-brand-pink" : ""}`}>
-                  {formatMNT(product.price)}
-                </span>
-                {product.oldPrice && (
-                  <span className="text-xs text-ink-subtle line-through">
-                    {formatMNT(product.oldPrice)}
-                  </span>
-                )}
-              </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  toast.error("Хэмжээ сонгохоор нэг бүтээгдэхүүн рүү орно уу");
-                }}
-                className="w-10 h-10 rounded-full bg-gradient-to-b from-bg-soft to-bg-blush hover:from-brand-pink hover:to-brand-pink hover:text-white flex items-center justify-center transition shadow-soft-pink"
-                aria-label="Add to cart"
-              >
-                <ShoppingBag className="w-4 h-4" strokeWidth={1.8} />
-              </button>
+              {product.badge}
             </div>
+          )}
+
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              const added = toggle({
+                id: product.id,
+                slug: product.slug,
+                name: product.name,
+                category: product.category,
+                price: product.price,
+                oldPrice: product.oldPrice,
+                image: primary,
+              });
+              toast.success(added ? "Хүслийн жагсаалтанд нэмэгдлээ" : "Хасагдлаа");
+            }}
+            className={`absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center transition shadow-sm backdrop-blur ${
+              liked ? "bg-brand-pink text-white" : "bg-white/85 text-ink hover:bg-white"
+            }`}
+            aria-label="Wishlist"
+          >
+            <Heart className={`w-[15px] h-[15px] ${liked ? "fill-current" : ""}`} strokeWidth={1.8} />
+          </button>
+
+          {primary && (
+            <Image
+              src={primary}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className="product-image product-image-primary object-cover absolute inset-0"
+            />
+          )}
+          {secondary && secondary !== primary && (
+            <Image
+              src={secondary}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className="product-image product-image-secondary object-cover absolute inset-0"
+            />
+          )}
+        </div>
+
+        {/* Name + price (clean, app-like) */}
+        <div className="pt-3 flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="font-serif text-[15px] leading-snug line-clamp-2">{product.name}</h3>
+            {volume && (
+              <div className="font-sans text-[11px] text-ink-subtle mt-0.5">{volume}</div>
+            )}
           </div>
-        </Link>
-      </Tilt3D>
+          <div className="text-right shrink-0">
+            <div className={`font-sans font-semibold text-[15px] ${product.oldPrice ? "text-brand-pink" : ""}`}>
+              {formatMNT(product.price)}
+            </div>
+            {product.oldPrice && (
+              <div className="font-sans text-[11px] text-ink-subtle line-through">
+                {formatMNT(product.oldPrice)}
+              </div>
+            )}
+          </div>
+        </div>
+      </Link>
     </motion.div>
   );
 }

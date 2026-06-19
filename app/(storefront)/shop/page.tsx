@@ -50,49 +50,74 @@ export default async function ShopPage({
 }) {
   const products = await getProducts(searchParams);
 
+  const chips = [
+    { label: "Бүгд", sort: "" },
+    { label: "Алдартай", sort: "popular" },
+    { label: "Хямд эхэлсэн", sort: "price-asc" },
+    { label: "Үнэтэй эхэлсэн", sort: "price-desc" },
+  ];
+  const activeSort = searchParams.sort ?? "";
+
   return (
-    <div className="max-w-8xl mx-auto px-6 lg:px-12 py-16 lg:py-24">
-      <div className="text-center mb-12 lg:mb-16">
-        <div className="eyebrow text-brand-pink mb-4">— Бүх бараа</div>
-        <h1 className="font-serif text-5xl lg:text-7xl tracking-tight leading-[0.95]">
+    <div className="max-w-8xl mx-auto px-5 lg:px-12 py-8 lg:py-20">
+      {/* Title — compact on mobile */}
+      <div className="mb-6 lg:text-center lg:mb-12">
+        <div className="eyebrow text-brand-pink mb-2 lg:mb-4">— Бүх бараа</div>
+        <h1 className="font-serif text-4xl lg:text-7xl tracking-tight leading-[0.95]">
           Дэлгүүр<span className="italic text-brand-pink">.</span>
         </h1>
-        <p className="text-ink-muted leading-relaxed mt-4 max-w-md mx-auto">
-          {products.length} бараа · байгальд ээлтэй, dermatologist шалгасан арчилгаа.
+        <p className="font-sans text-ink-muted text-sm mt-2 lg:mt-4 lg:max-w-md lg:mx-auto">
+          {products.length} бараа · dermatologist шалгасан арчилгаа.
         </p>
       </div>
 
-      <form className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-12 lg:mb-16">
-        <div className="relative flex-1 min-w-[200px]">
+      {/* Search pill (reference style) */}
+      <form className="mb-5">
+        <div className="flex items-center gap-2 bg-bg-soft rounded-pill p-1.5 lg:max-w-xl lg:mx-auto shadow-soft-pink">
+          <button
+            type="submit"
+            aria-label="Хайх"
+            className="w-11 h-11 rounded-full flex items-center justify-center text-white shrink-0"
+            style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+            </svg>
+          </button>
           <input
             name="q"
             defaultValue={searchParams.q}
-            placeholder="Хайх..."
-            className="w-full bg-bg-soft border border-line-subtle rounded-pill px-6 py-3 text-sm focus:border-brand-pink focus:bg-white outline-none transition"
+            placeholder="Бараа хайх..."
+            className="flex-1 bg-transparent font-sans px-2 py-2 text-sm outline-none placeholder:text-ink-subtle"
           />
         </div>
-        <select
-          name="sort"
-          defaultValue={searchParams.sort}
-          className="bg-bg-soft border border-line-subtle rounded-pill px-5 py-3 text-sm focus:border-brand-pink outline-none transition cursor-pointer"
-        >
-          <option value="">Шинээр</option>
-          <option value="popular">Алдартай</option>
-          <option value="price-asc">Үнэ ↑</option>
-          <option value="price-desc">Үнэ ↓</option>
-        </select>
-        <button
-          className="btn-3d rounded-pill px-7 py-3 text-sm font-semibold text-white shrink-0"
-          style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}
-        >
-          Хэрэглэх
-        </button>
       </form>
+
+      {/* Category chips — horizontal scroll */}
+      <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 mb-7 lg:justify-center lg:mx-0 lg:px-0">
+        {chips.map((c) => {
+          const active = activeSort === c.sort;
+          const href = c.sort ? `/shop?sort=${c.sort}` : "/shop";
+          return (
+            <a
+              key={c.label}
+              href={href}
+              className={`shrink-0 font-sans text-sm font-medium px-4 py-2 rounded-pill transition ${
+                active
+                  ? "bg-ink text-white"
+                  : "bg-bg-soft text-ink-muted hover:bg-bg-blush"
+              }`}
+            >
+              {c.label}
+            </a>
+          );
+        })}
+      </div>
 
       {products.length === 0 ? (
         <div className="py-24 text-center text-ink-muted">Бараа олдсонгүй.</div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-14 lg:gap-x-8 lg:gap-y-20">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3.5 gap-y-7 lg:gap-x-8 lg:gap-y-14">
           {products.map((p, i) => (
             <ProductCard key={p.id} product={p} index={i} />
           ))}
