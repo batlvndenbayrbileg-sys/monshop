@@ -123,9 +123,10 @@ export function MobileHome({ products, categories }: { products: P[]; categories
         <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5">
           {categories.map((c) => (
             <Link key={c.slug} href={`/categories/${c.slug}`} className="shrink-0 w-[88px]">
-              <div className="relative w-[88px] h-[88px] rounded-2xl overflow-hidden mb-2"
-                style={{ background: "linear-gradient(135deg, #EFE3DB, #F4E8DE)" }}>
-                {CAT_IMG[c.slug] && <Image src={CAT_IMG[c.slug]} alt="" fill className="object-contain p-3" />}
+              <div className="relative w-[88px] h-[88px] rounded-2xl overflow-hidden mb-2 bg-[#F2E6DF]">
+                {CAT_IMG[c.slug] && (
+                  <Image src={CAT_IMG[c.slug]} alt={c.name} fill sizes="88px" className="object-cover" />
+                )}
               </div>
               <div className="font-sans text-[11px] text-center font-medium truncate">{c.name}</div>
             </Link>
