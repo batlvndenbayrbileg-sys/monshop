@@ -5,6 +5,7 @@ import { Reveal } from "@/components/Reveal";
 import { Tilt3D } from "@/components/Tilt3D";
 import { TrendingUp, Sparkles, ArrowUpRight } from "lucide-react";
 import { formatMNT } from "@/lib/utils";
+import { MobileCategories } from "@/components/MobileCategories";
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +56,14 @@ export default async function CategoriesPage() {
   const rest = categories.filter((c) => c.id !== featured?.id);
 
   return (
-    <article className="bg-white">
+    <>
+      {/* Mobile — luxury two-pane category browser */}
+      <MobileCategories
+        categories={categories.map((c) => ({ name: c.name, slug: c.slug, count: c._count.products }))}
+      />
+
+      {/* Desktop */}
+      <article className="hidden lg:block bg-white">
       {/* ===== HERO ===== */}
       <section className="relative bg-soft-pink py-16 lg:py-24 overflow-hidden">
         <div className="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-brand-pink/15 blur-3xl drift pointer-events-none" />
@@ -250,6 +258,7 @@ export default async function CategoriesPage() {
           </Reveal>
         </div>
       </section>
-    </article>
+      </article>
+    </>
   );
 }
