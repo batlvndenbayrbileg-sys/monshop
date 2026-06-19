@@ -7,6 +7,7 @@ import { useWishlist } from "@/lib/wishlist-store";
 import {
   Search, Mic, Truck, ShieldCheck, Heart, Lock, Plus,
   Leaf, FlaskConical, Globe, Star, ChevronRight,
+  Droplet, Sun, Clock, Sparkles,
 } from "lucide-react";
 
 type P = {
@@ -246,12 +247,17 @@ export function MobileHome({ products, categories }: { products: P[]; categories
         <SectionHead title="Асуудлаар хайх" href="/shop" />
         <div className="flex gap-4 overflow-x-auto no-scrollbar -mx-5 px-5">
           {[
-            { e: "✦", t: "Батга" }, { e: "❀", t: "Хуурайшил" }, { e: "✷", t: "Бүдэг" },
-            { e: "❍", t: "Хөгшрөлт" }, { e: "✺", t: "Толбо" },
+            { Icon: Droplet, t: "Хуурайшил" },
+            { Icon: Sun, t: "Толбо" },
+            { Icon: Sparkles, t: "Бүдэг" },
+            { Icon: Clock, t: "Хөгшрөлт" },
+            { Icon: ShieldCheck, t: "Батга" },
           ].map((x) => (
-            <Link key={x.t} href="/shop" className="shrink-0 flex flex-col items-center gap-2 w-[62px]">
-              <div className="w-14 h-14 rounded-full bg-[#F2EAE3] flex items-center justify-center text-brand-pink text-lg">{x.e}</div>
-              <span className="font-sans text-[11px] text-center">{x.t}</span>
+            <Link key={x.t} href="/shop" className="shrink-0 flex flex-col items-center gap-2 w-[64px]">
+              <div className="w-14 h-14 rounded-full bg-[#F2E6DF] flex items-center justify-center">
+                <x.Icon className="w-5 h-5 text-brand-pink" strokeWidth={1.5} />
+              </div>
+              <span className="font-sans text-[11px] text-center leading-tight">{x.t}</span>
             </Link>
           ))}
         </div>
@@ -266,15 +272,14 @@ export function MobileHome({ products, categories }: { products: P[]; categories
             { t: "Niacinamide", s: "Гэрэлтэлт", img: "/product1.png" },
             { t: "Vitamin C", s: "Тод байдал", img: "/product3.png" },
           ].map((x) => (
-            <Link key={x.t} href="/shop" className="relative rounded-2xl overflow-hidden aspect-[3/4] p-3 flex flex-col justify-end"
-              style={{ background: "linear-gradient(135deg, #EAD9CC, #F0E3DA)" }}>
-              <div className="absolute inset-0 flex items-center justify-center opacity-90">
-                <div className="relative w-3/4 h-3/4"><Image src={x.img} alt="" fill className="object-contain" /></div>
+            <Link key={x.t} href="/shop" className="block">
+              {/* Image tile */}
+              <div className="relative aspect-square rounded-2xl overflow-hidden mb-2 bg-[#F2E6DF]">
+                <Image src={x.img} alt={x.t} fill sizes="120px" className="object-contain p-3.5" />
               </div>
-              <div className="relative">
-                <div className="font-sans text-[11px] font-semibold leading-tight">{x.t}</div>
-                <div className="font-sans text-[9px] text-ink-muted">{x.s}</div>
-              </div>
+              {/* Clean text below — no overlap */}
+              <div className="font-sans text-[12px] font-semibold leading-tight">{x.t}</div>
+              <div className="font-sans text-[10px] text-ink-muted mt-0.5">{x.s}</div>
             </Link>
           ))}
         </div>
