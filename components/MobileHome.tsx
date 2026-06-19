@@ -76,26 +76,32 @@ export function MobileHome({ products, categories }: { products: P[]; categories
 
       {/* HERO */}
       <div className="px-5">
-        <div className="relative rounded-[28px] overflow-hidden p-6 pt-7 min-h-[330px]"
-          style={{ background: "linear-gradient(135deg, #EBDDD2 0%, #F2E7DD 55%, #EFE0E0 100%)" }}>
-          <div className="relative z-10 max-w-[58%]">
+        <div className="relative rounded-[28px] overflow-hidden min-h-[360px] bg-[#EBDDD2]">
+          {/* Product image fills the right side */}
+          {hero?.image && (
+            <div className="absolute inset-y-0 right-0 w-[62%]">
+              <Image src={hero.image} alt="" fill sizes="60vw" className="object-cover" />
+            </div>
+          )}
+          {/* Gradient scrim — solid card colour on the left, fading to reveal the image */}
+          <div
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(90deg, #EBDDD2 0%, #EBDDD2 40%, rgba(235,221,210,0.4) 62%, transparent 80%)" }}
+          />
+          {/* Text */}
+          <div className="relative z-10 p-6 pt-8 max-w-[62%] flex flex-col min-h-[360px]">
             <div className="font-sans text-[11px] font-semibold tracking-[0.18em] uppercase text-ink-muted mb-3">Шинэ ирэлт</div>
-            <h1 className="font-serif text-[34px] leading-[1.04] tracking-tight mb-3">
+            <h1 className="font-serif text-[34px] leading-[1.02] tracking-tight mb-3">
               Байгалийн<br />гэрэлтэлт
             </h1>
-            <p className="font-sans text-[13px] text-ink-muted leading-relaxed mb-6">
+            <p className="font-sans text-[13px] text-ink-muted leading-relaxed mb-7 max-w-[230px]">
               Эмнэлзүйгээр батлагдсан, гэрэлтэй эрүүл арьсны төлөө.
             </p>
-            <Link href="/shop" className="inline-flex items-center gap-2 bg-ink text-white rounded-pill pl-5 pr-2 py-1.5 font-sans text-xs font-semibold">
+            <Link href="/shop" className="mt-auto inline-flex items-center gap-2 bg-ink text-white rounded-pill pl-5 pr-1.5 py-1.5 font-sans text-xs font-semibold self-start">
               Худалдан авах
               <span className="w-7 h-7 rounded-full bg-white text-ink flex items-center justify-center">→</span>
             </Link>
           </div>
-          {hero?.image && (
-            <div className="absolute right-0 bottom-0 w-[52%] h-[88%]">
-              <Image src={hero.image} alt="" fill className="object-contain object-bottom drop-shadow-2xl" />
-            </div>
-          )}
         </div>
 
         {/* Trust row */}
