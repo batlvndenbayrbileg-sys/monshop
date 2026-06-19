@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, Instagram, Facebook, Twitter, Youtube, Send } from "lucide-react";
+import Image from "next/image";
+import { Instagram, Facebook, Twitter, Youtube, Send } from "lucide-react";
 import { motion } from "framer-motion";
 
 const LINKS = [
@@ -31,11 +32,7 @@ export function Footer() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <Link href="/" className="inline-flex items-center justify-center mb-6">
-            <span className="w-20 h-20 rounded-full bg-white shadow-soft-pink flex items-center justify-center">
-              <span className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-rose to-brand-pink flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" strokeWidth={2.2} />
-              </span>
-            </span>
+            <Image src="/logo.png" alt="monshop" width={180} height={54} className="h-12 w-auto object-contain" />
           </Link>
         </motion.div>
 

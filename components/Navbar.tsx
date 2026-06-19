@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Search, User, ShoppingBag, Menu, LogOut, Sparkles, Heart, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-store";
@@ -73,11 +74,8 @@ export function Navbar() {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 shrink-0">
-              <span className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-rose to-brand-pink flex items-center justify-center shadow-soft-pink">
-                <Sparkles className="w-4 h-4 text-white" strokeWidth={2} />
-              </span>
-              <span className="font-serif text-2xl tracking-tight">monshop</span>
+            <Link href="/" className="flex items-center shrink-0">
+              <Image src="/logo.png" alt="monshop" width={140} height={40} priority className="h-8 lg:h-9 w-auto object-contain" />
             </Link>
 
             {/* Desktop nav links */}
@@ -255,11 +253,8 @@ export function Navbar() {
                 >
                   <X className="w-4 h-4" />
                 </button>
-                <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 mb-10">
-                  <span className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-rose to-brand-pink flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-white" strokeWidth={2} />
-                  </span>
-                  <span className="font-serif text-2xl tracking-tight">monshop</span>
+                <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center mb-10">
+                  <Image src="/logo.png" alt="monshop" width={140} height={40} className="h-9 w-auto object-contain" />
                 </Link>
                 <ul className="space-y-1">
                   {LINKS.map((l, i) => (
