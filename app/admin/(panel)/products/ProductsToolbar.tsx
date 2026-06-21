@@ -2,9 +2,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { Search, Plus, FolderPlus } from "lucide-react";
+import { Search, Plus, FolderTree } from "lucide-react";
 import Link from "next/link";
-import toast from "react-hot-toast";
 
 type Cat = { name: string; slug: string; count: number };
 
@@ -18,20 +17,6 @@ export function ProductsToolbar({ categories }: { categories: Cat[] }) {
     const params = new URLSearchParams(sp.toString());
     for (const [k, v] of Object.entries(next)) v ? params.set(k, v) : params.delete(k);
     router.push(`/admin/products?${params.toString()}`);
-  };
-
-  const addCategory = async () => {
-    const name = prompt("Шинэ ангиллын нэр:");
-    if (!name?.trim()) return;
-    const r = await fetch("/api/admin/categories", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
-    const j = await r.json();
-    if (!r.ok) return toast.error(j.error || "Алдаа");
-    toast.success("Ангилал нэмэгдлээ");
-    router.refresh();
   };
 
   return (
@@ -62,12 +47,12 @@ export function ProductsToolbar({ categories }: { categories: Cat[] }) {
         ))}
       </select>
 
-      <button
-        onClick={addCategory}
+      <Link
+        href="/admin/categories"
         className="bg-white border border-line hover:border-brand-pink rounded-pill px-4 py-2.5 text-sm font-semibold flex items-center gap-1.5"
       >
-        <FolderPlus className="w-4 h-4" /> Ангилал
-      </button>
+        <FolderTree className="w-4 h-4" /> Ангилал
+      </Link>
 
       <Link
         href="/admin/products/new"
