@@ -20,6 +20,12 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "Бүртгэл олдсонгүй" }, { status: 400 });
   }
+  if (!user.passwordHash) {
+    return NextResponse.json(
+      { error: "Энэ хаяг Google-ээр бүртгэгдсэн. Google-ээр нэвтэрнэ үү." },
+      { status: 400 }
+    );
+  }
   const ok = await bcrypt.compare(parsed.data.password, user.passwordHash);
   if (!ok) {
     return NextResponse.json({ error: "Нууц үг буруу байна" }, { status: 400 });

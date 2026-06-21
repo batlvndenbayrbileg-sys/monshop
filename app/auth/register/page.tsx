@@ -155,7 +155,12 @@ export default function RegisterPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <SocialBtn provider="Google" icon={<GoogleIcon />} />
+              <a
+                href="/api/auth/google?next=/account"
+                className="flex items-center justify-center gap-2 border border-line bg-white hover:bg-bg-soft rounded-pill py-3 text-sm font-medium transition"
+              >
+                <GoogleIcon /> Google
+              </a>
               <SocialBtn provider="Facebook" icon={<FacebookIcon />} />
             </div>
 
