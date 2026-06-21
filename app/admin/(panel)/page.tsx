@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { formatMNT } from "@/lib/utils";
 import Link from "next/link";
 import { TrendingUp, ShoppingBag, Users, Package, AlertTriangle, CreditCard } from "lucide-react";
+import { RevenueChart } from "./RevenueChart";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,23 @@ export default async function AdminDashboard() {
   const payEntries = Object.entries(payTotals).sort((a, b) => b[1] - a[1]);
   const payMax = Math.max(1, ...payEntries.map(([, v]) => v));
 
+  // 14-day revenue series
+  const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 13);
+  const chartOrders = await db.order.findMany({
+    where: { status: { in: paidStatuses }, createdAt: { gte: dayStart } },
+    select: { total: true, createdAt: true },
+  });
+  const buckets: { label: string; value: number }[] = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 13 + i);
+    buckets.push({ label: `${d.getMonth() + 1}/${d.getDate()}`, value: 0 });
+  }
+  for (const o of chartOrders) {
+    const d = o.createdAt;
+    const idx = Math.floor((d.getTime() - dayStart.getTime()) / 86400000);
+    if (idx >= 0 && idx < 14) buckets[idx].value += o.total;
+  }
+
   return (
     <div>
       <h1 className="text-3xl lg:text-4xl font-bold tracking-tight mb-2">Тойм</h1>
@@ -52,6 +70,11 @@ export default async function AdminDashboard() {
         <Stat icon={CreditCard} title="Энэ сарын орлого" value={formatMNT(revenueMonth._sum.total ?? 0)} />
         <Stat icon={ShoppingBag} title="Захиалга" value={`${orderCount}`} sub={`${pendingCount} хүлээгдэж буй`} />
         <Stat icon={Users} title="Хэрэглэгч" value={`${userCount}`} sub={`${productCount} бараа`} />
+      </div>
+
+      {/* Revenue chart */}
+      <div className="mb-6">
+        <RevenueChart data={buckets} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6 mb-6">

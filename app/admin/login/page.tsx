@@ -89,9 +89,6 @@ export default function AdminLogin() {
             </button>
           </div>
 
-          <div className="mt-6 pt-5 border-t border-line text-center">
-            <div className="text-[11px] text-ink-subtle">Туршилт: admin@monshop.mn / admin123</div>
-          </div>
         </form>
       </div>
     </div>

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import Image from "next/image";
 import { Plus, Trash2 } from "lucide-react";
+import { ImageUploader } from "@/components/ImageUploader";
 
 type Variant = { id?: string; size: string; price: number; stock: number; color?: string; colorHex?: string };
 
@@ -118,30 +118,9 @@ export function EditProductForm({ product }: { product: any }) {
 
         {/* Images */}
         <section className="bg-white rounded-3xl border border-line p-6 lg:p-8">
-          <h2 className="font-bold mb-4">Зургууд</h2>
-          <div className="space-y-3">
-            {images.map((img, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-bg-secondary shrink-0 border border-line">
-                  {img.trim() && <Image src={img} alt="" fill sizes="56px" className="object-cover" />}
-                </div>
-                <input
-                  value={img}
-                  onChange={(e) => { const n = [...images]; n[i] = e.target.value; setImages(n); }}
-                  placeholder="https://... эсвэл /зураг.png"
-                  className="flex-1 bg-bg-secondary border border-line rounded-pill px-5 py-2.5 text-sm"
-                />
-                <button type="button" onClick={() => setImages(images.filter((_, idx) => idx !== i))}
-                  className="w-10 h-10 rounded-full bg-bg-secondary flex items-center justify-center shrink-0">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            ))}
-          </div>
-          <button type="button" onClick={() => setImages([...images, ""])}
-            className="mt-4 text-sm font-semibold flex items-center gap-1 text-brand-pink">
-            <Plus className="w-4 h-4" /> Зураг нэмэх
-          </button>
+          <h2 className="font-bold mb-1">Зургууд</h2>
+          <p className="text-xs text-ink-muted mb-4">Гар утас/компьютероос сонгож оруулна. Эхний зураг үндсэн болно.</p>
+          <ImageUploader value={images} onChange={setImages} />
         </section>
 
         {/* Variants / inventory */}

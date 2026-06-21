@@ -1,42 +1,35 @@
 import Link from "next/link";
-import { LayoutDashboard, Package, ShoppingBag, Users, ExternalLink, LogOut } from "lucide-react";
+import { ExternalLink, Sparkles } from "lucide-react";
 import { LogoutButton } from "./LogoutButton";
+import { AdminNav, AdminNavMobile } from "./AdminNav";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-bg-secondary">
+    <div className="min-h-screen bg-[#F7F5F2]">
       <div className="flex">
-        {/* Sidebar */}
-        <aside className="hidden lg:flex w-64 h-screen sticky top-0 bg-bg-dark text-white flex-col">
-          <div className="p-6 border-b border-white/10">
-            <Link href="/admin" className="block">
-              <div className="text-xl font-bold tracking-tight">monshop</div>
-              <div className="text-xs text-white/60 tracking-widest mt-0.5">АДМИН</div>
+        {/* Sidebar — light professional */}
+        <aside className="hidden lg:flex w-64 h-screen sticky top-0 bg-white border-r border-line-subtle flex-col">
+          <div className="p-6">
+            <Link href="/admin" className="flex items-center gap-2">
+              <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-rose to-brand-pink flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" strokeWidth={2} />
+              </span>
+              <div>
+                <div className="font-serif text-lg leading-none">monshop</div>
+                <div className="text-[10px] text-ink-subtle tracking-[0.2em] mt-0.5">АДМИН</div>
+              </div>
             </Link>
           </div>
-          <nav className="flex-1 p-4 space-y-1">
-            {[
-              { href: "/admin", icon: LayoutDashboard, label: "Тойм" },
-              { href: "/admin/products", icon: Package, label: "Бараа" },
-              { href: "/admin/orders", icon: ShoppingBag, label: "Захиалга" },
-              { href: "/admin/users", icon: Users, label: "Хэрэглэгч" },
-            ].map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="flex items-center gap-3 px-4 py-2.5 rounded-pill text-sm font-medium hover:bg-white/10 transition"
-              >
-                <l.icon className="w-4 h-4" />
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="p-4 border-t border-white/10 space-y-1">
+          <div className="px-4 flex-1">
+            <div className="text-[10px] font-semibold tracking-widest text-ink-subtle px-4 mb-2">ЦЭС</div>
+            <AdminNav />
+          </div>
+          <div className="p-4 border-t border-line-subtle space-y-1">
             <Link
               href="/"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-pill text-sm font-medium hover:bg-white/10 transition"
+              className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-ink-muted hover:bg-bg-soft transition"
             >
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="w-[18px] h-[18px]" strokeWidth={1.8} />
               Сайт үзэх
             </Link>
             <LogoutButton />
@@ -44,16 +37,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </aside>
 
         {/* Mobile top bar */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 bg-bg-dark text-white z-40 flex items-center justify-between px-4 h-14">
-          <Link href="/admin" className="font-bold tracking-tight">monshop · АДМИН</Link>
-          <div className="flex gap-1 text-xs">
-            <Link href="/admin/products" className="px-2 py-1 hover:bg-white/10 rounded">Бараа</Link>
-            <Link href="/admin/orders" className="px-2 py-1 hover:bg-white/10 rounded">Захиалга</Link>
-            <Link href="/admin/users" className="px-2 py-1 hover:bg-white/10 rounded">Хэрэглэгч</Link>
-          </div>
+        <div className="lg:hidden fixed top-0 left-0 right-0 bg-white/90 backdrop-blur border-b border-line-subtle z-40 flex items-center justify-between px-4 h-14">
+          <Link href="/admin" className="flex items-center gap-2">
+            <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-rose to-brand-pink flex items-center justify-center">
+              <Sparkles className="w-3.5 h-3.5 text-white" strokeWidth={2} />
+            </span>
+            <span className="font-serif text-base">Админ</span>
+          </Link>
+          <AdminNavMobile />
         </div>
 
-        <main className="flex-1 p-6 lg:p-10 mt-14 lg:mt-0">{children}</main>
+        <main className="flex-1 p-5 lg:p-10 mt-14 lg:mt-0 max-w-[1400px]">{children}</main>
       </div>
     </div>
   );

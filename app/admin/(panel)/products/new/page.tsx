@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Plus, Trash2 } from "lucide-react";
+import { ImageUploader } from "@/components/ImageUploader";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -86,36 +87,10 @@ export default function NewProductPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl border border-line p-6 lg:p-8 space-y-3 mb-6">
-        <div className="font-bold mb-2">Зургийн URL-ууд</div>
-        {form.images.map((img, i) => (
-          <div key={i} className="flex gap-2">
-            <input
-              value={img}
-              onChange={(e) => {
-                const next = [...form.images];
-                next[i] = e.target.value;
-                setForm({ ...form, images: next });
-              }}
-              placeholder="https://..."
-              className="flex-1 bg-bg-secondary border border-line rounded-pill px-5 py-2.5 text-sm"
-            />
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, images: form.images.filter((_, idx) => idx !== i) })}
-              className="w-10 h-10 rounded-full bg-bg-secondary flex items-center justify-center"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() => setForm({ ...form, images: [...form.images, ""] })}
-          className="text-sm font-semibold flex items-center gap-1"
-        >
-          <Plus className="w-4 h-4" /> Зураг нэмэх
-        </button>
+      <div className="bg-white rounded-3xl border border-line p-6 lg:p-8 mb-6">
+        <div className="font-bold mb-1">Зургууд</div>
+        <p className="text-xs text-ink-muted mb-4">Гар утас/компьютероос сонгож оруулна.</p>
+        <ImageUploader value={form.images} onChange={(v) => setForm({ ...form, images: v })} />
       </div>
 
       <div className="bg-white rounded-3xl border border-line p-6 lg:p-8 space-y-3 mb-6">

@@ -154,13 +154,6 @@ function LoginForm() {
             >
               <GoogleIcon /> Google-ээр нэвтрэх
             </a>
-
-            <div className="mt-7 pt-6 border-t border-line text-[11px] text-ink-muted text-center">
-              <div className="font-semibold mb-1">Туршилт акаунт:</div>
-              admin@monshop.mn / admin123
-              <br />
-              test@monshop.mn / test1234
-            </div>
           </div>
         </div>
       </motion.div>

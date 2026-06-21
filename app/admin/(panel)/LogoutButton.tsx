@@ -14,7 +14,7 @@ export function LogoutButton() {
         await refresh();
         router.push("/admin/login");
       }}
-      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-pill text-sm font-medium hover:bg-white/10 transition"
+      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-state-sale hover:bg-bg-soft transition"
     >
       <LogOut className="w-4 h-4" /> Гарах
     </button>
