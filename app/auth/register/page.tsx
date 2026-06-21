@@ -157,11 +157,10 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-3">
               <a
                 href="/api/auth/google?next=/account"
-                className="flex items-center justify-center gap-2 border border-line bg-white hover:bg-bg-soft rounded-pill py-3 text-sm font-medium transition"
+                className="col-span-2 flex items-center justify-center gap-2.5 border border-line bg-white hover:bg-bg-soft rounded-pill py-3.5 text-sm font-medium transition"
               >
-                <GoogleIcon /> Google
+                <GoogleIcon /> Google-ээр бүртгүүлэх
               </a>
-              <SocialBtn provider="Facebook" icon={<FacebookIcon />} />
             </div>
 
             <p className="text-[11px] text-ink-muted text-center mt-6">

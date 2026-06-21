@@ -148,15 +148,12 @@ function LoginForm() {
             </div>
 
             {/* Social login */}
-            <div className="grid grid-cols-2 gap-3">
-              <a
-                href={`/api/auth/google?next=${encodeURIComponent(next)}`}
-                className="flex items-center justify-center gap-2 border border-line bg-white hover:bg-bg-soft rounded-pill py-3 text-sm font-medium transition"
-              >
-                <GoogleIcon /> Google
-              </a>
-              <SocialBtn provider="Facebook" icon={<FacebookIcon />} />
-            </div>
+            <a
+              href={`/api/auth/google?next=${encodeURIComponent(next)}`}
+              className="flex items-center justify-center gap-2.5 border border-line bg-white hover:bg-bg-soft rounded-pill py-3.5 text-sm font-medium transition"
+            >
+              <GoogleIcon /> Google-ээр нэвтрэх
+            </a>
 
             <div className="mt-7 pt-6 border-t border-line text-[11px] text-ink-muted text-center">
               <div className="font-semibold mb-1">Туршилт акаунт:</div>

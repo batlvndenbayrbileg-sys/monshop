@@ -7,8 +7,8 @@ export default async function AccountLayout({ children }: { children: React.Reac
   if (!user) redirect("/auth/login?next=/account");
 
   return (
-    <div className="max-w-7xl mx-auto px-6 lg:px-12 py-10 lg:py-14 grid lg:grid-cols-[240px_1fr] gap-10">
-      <aside>
+    <div className="max-w-7xl mx-auto px-5 lg:px-12 py-6 lg:py-14 grid lg:grid-cols-[240px_1fr] gap-10">
+      <aside className="hidden lg:block">
         <div className="mb-8">
           <div className="text-xs font-semibold tracking-widest text-ink-muted mb-2">
             ХЭРЭГЛЭГЧ
