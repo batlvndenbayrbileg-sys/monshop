@@ -49,11 +49,12 @@ export function CategoryManager({ initial }: { initial: Cat[] }) {
           className="flex-1 bg-bg-secondary border border-line rounded-pill px-5 py-3 text-sm focus:border-brand-pink outline-none"
         />
         <button
-          disabled={adding}
+          type="submit"
+          disabled={adding || !name.trim()}
           className="btn-3d text-white rounded-pill px-6 py-3 text-sm font-semibold flex items-center gap-2 disabled:opacity-50 shrink-0"
           style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}
         >
-          <Plus className="w-4 h-4" /> Нэмэх
+          <Plus className="w-4 h-4" /> {adding ? "Нэмж байна..." : "Нэмэх"}
         </button>
       </form>
 
