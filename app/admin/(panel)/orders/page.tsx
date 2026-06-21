@@ -1,11 +1,27 @@
 import { db } from "@/lib/db";
 import { formatMNT } from "@/lib/utils";
 import { OrderStatusSelect } from "./OrderStatusSelect";
+import { OrdersToolbar } from "./OrdersToolbar";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminOrders() {
+export default async function AdminOrders({
+  searchParams,
+}: {
+  searchParams: { q?: string; status?: string };
+}) {
+  const where: any = {};
+  if (searchParams.status) where.status = searchParams.status;
+  if (searchParams.q) {
+    where.OR = [
+      { orderNumber: { contains: searchParams.q } },
+      { shippingName: { contains: searchParams.q, mode: "insensitive" } },
+      { shippingPhone: { contains: searchParams.q } },
+    ];
+  }
+
   const orders = await db.order.findMany({
+    where,
     include: { items: true },
     orderBy: { createdAt: "desc" },
   });
@@ -13,7 +29,9 @@ export default async function AdminOrders() {
   return (
     <div>
       <h1 className="text-3xl lg:text-4xl font-bold tracking-tight mb-2">Захиалга</h1>
-      <p className="text-ink-muted mb-8">{orders.length} нийт захиалга</p>
+      <p className="text-ink-muted mb-6">{orders.length} захиалга харагдаж байна</p>
+
+      <OrdersToolbar />
 
       <div className="bg-white rounded-3xl border border-line overflow-hidden">
         <div className="overflow-x-auto">

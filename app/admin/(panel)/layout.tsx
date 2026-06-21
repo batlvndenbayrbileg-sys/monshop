@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ExternalLink, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { ExternalLink } from "lucide-react";
 import { LogoutButton } from "./LogoutButton";
 import { AdminNav, AdminNavMobile } from "./AdminNav";
 
@@ -11,13 +12,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <aside className="hidden lg:flex w-64 h-screen sticky top-0 bg-white border-r border-line-subtle flex-col">
           <div className="p-6">
             <Link href="/admin" className="flex items-center gap-2">
-              <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-rose to-brand-pink flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" strokeWidth={2} />
-              </span>
-              <div>
-                <div className="font-serif text-lg leading-none">monshop</div>
-                <div className="text-[10px] text-ink-subtle tracking-[0.2em] mt-0.5">АДМИН</div>
-              </div>
+              <Image src="/logo.png" alt="monshop" width={130} height={38} className="h-8 w-auto object-contain" />
+              <span className="text-[10px] text-ink-subtle tracking-[0.2em] border-l border-line pl-2">АДМИН</span>
             </Link>
           </div>
           <div className="px-4 flex-1">
@@ -39,10 +35,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Mobile top bar */}
         <div className="lg:hidden fixed top-0 left-0 right-0 bg-white/90 backdrop-blur border-b border-line-subtle z-40 flex items-center justify-between px-4 h-14">
           <Link href="/admin" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-rose to-brand-pink flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5 text-white" strokeWidth={2} />
-            </span>
-            <span className="font-serif text-base">Админ</span>
+            <Image src="/logo.png" alt="monshop" width={100} height={28} className="h-7 w-auto object-contain" />
+            <span className="text-[10px] text-ink-subtle">АДМИН</span>
           </Link>
           <AdminNavMobile />
         </div>

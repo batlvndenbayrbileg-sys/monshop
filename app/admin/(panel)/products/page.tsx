@@ -2,34 +2,50 @@ import { db } from "@/lib/db";
 import { formatMNT } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { ProductsToolbar } from "./ProductsToolbar";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminProducts() {
-  const products = await db.product.findMany({
-    include: {
-      images: { take: 1, orderBy: { position: "asc" } },
-      category: true,
-      variants: true,
-    },
-    orderBy: { createdAt: "desc" },
-  });
+export default async function AdminProducts({
+  searchParams,
+}: {
+  searchParams: { q?: string; category?: string };
+}) {
+  const where: any = {};
+  if (searchParams.q) {
+    where.OR = [
+      { name: { contains: searchParams.q, mode: "insensitive" } },
+      { slug: { contains: searchParams.q } },
+    ];
+  }
+  if (searchParams.category) where.category = { slug: searchParams.category };
+
+  const [products, categories] = await Promise.all([
+    db.product.findMany({
+      where,
+      include: {
+        images: { take: 1, orderBy: { position: "asc" } },
+        category: true,
+        variants: true,
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    db.category.findMany({
+      include: { _count: { select: { products: true } } },
+      orderBy: { name: "asc" },
+    }),
+  ]);
 
   return (
     <div>
-      <div className="flex flex-wrap justify-between items-center gap-3 mb-8">
-        <div>
-          <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">Бараа</h1>
-          <p className="text-ink-muted mt-1">{products.length} нийт бараа</p>
-        </div>
-        <Link
-          href="/admin/products/new"
-          className="bg-ink text-ink-inverse rounded-pill px-5 py-2.5 text-sm font-semibold flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" /> ШИНЭ БАРАА
-        </Link>
+      <div className="mb-5">
+        <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">Бараа</h1>
+        <p className="text-ink-muted mt-1">{products.length} бараа харагдаж байна</p>
       </div>
+
+      <ProductsToolbar
+        categories={categories.map((c) => ({ name: c.name, slug: c.slug, count: c._count.products }))}
+      />
 
       <div className="bg-white rounded-3xl border border-line overflow-hidden">
         <div className="overflow-x-auto">

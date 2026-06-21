@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useAuth } from "@/components/Providers";
+import Image from "next/image";
 import { Mail, Lock, Eye, EyeOff, ShieldCheck } from "lucide-react";
 
 export default function AdminLogin() {
@@ -40,11 +41,12 @@ export default function AdminLogin() {
       <div className="w-full max-w-sm relative z-10">
         {/* Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-rose to-brand-pink mb-4 shadow-lg">
-            <ShieldCheck className="w-7 h-7 text-white" strokeWidth={1.8} />
+          <div className="inline-flex items-center justify-center bg-white rounded-2xl px-5 py-3 mb-4 shadow-lg">
+            <Image src="/logo.png" alt="monshop" width={150} height={44} priority className="h-9 w-auto object-contain" />
           </div>
-          <div className="font-serif text-3xl text-white tracking-tight">monshop</div>
-          <div className="text-[11px] font-semibold tracking-[0.3em] text-white/40 mt-1">АДМИН ПАНЕЛЬ</div>
+          <div className="text-[11px] font-semibold tracking-[0.3em] text-white/40 flex items-center justify-center gap-2">
+            <ShieldCheck className="w-3.5 h-3.5" /> АДМИН ПАНЕЛЬ
+          </div>
         </div>
 
         {/* Card */}
