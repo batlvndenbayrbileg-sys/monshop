@@ -20,19 +20,72 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   if (!(await guard())) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-  const body = await req.json();
-  const product = await db.product.update({
-    where: { id: params.id },
-    data: {
-      name: body.name,
-      description: body.description,
-      basePrice: body.basePrice,
-      oldPrice: body.oldPrice ?? null,
-      badge: body.badge ?? null,
-      status: body.status,
-    },
-  });
-  return NextResponse.json({ product });
+  try {
+    const body = await req.json();
+
+    await db.$transaction(async (tx) => {
+      await tx.product.update({
+        where: { id: params.id },
+        data: {
+          name: body.name,
+          description: body.description,
+          basePrice: Number(body.basePrice),
+          oldPrice: body.oldPrice ? Number(body.oldPrice) : null,
+          badge: body.badge || null,
+          status: body.status,
+        },
+      });
+
+      // Replace images if provided
+      if (Array.isArray(body.images)) {
+        await tx.productImage.deleteMany({ where: { productId: params.id } });
+        const urls = body.images.filter((u: string) => u && u.trim());
+        for (let i = 0; i < urls.length; i++) {
+          await tx.productImage.create({
+            data: { productId: params.id, url: urls[i], position: i },
+          });
+        }
+      }
+
+      // Upsert variants (stock / price / size) if provided
+      if (Array.isArray(body.variants)) {
+        const keepIds: string[] = body.variants.filter((v: any) => v.id).map((v: any) => v.id);
+        // delete variants the admin removed
+        await tx.productVariant.deleteMany({
+          where: { productId: params.id, id: { notIn: keepIds.length ? keepIds : ["__none__"] } },
+        });
+        for (const v of body.variants) {
+          if (v.id) {
+            await tx.productVariant.update({
+              where: { id: v.id },
+              data: { size: v.size, price: Number(v.price), stock: Number(v.stock) },
+            });
+          } else {
+            await tx.productVariant.create({
+              data: {
+                productId: params.id,
+                sku: `${params.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                color: v.color || "Үндсэн",
+                colorHex: v.colorHex || "#F8BBD0",
+                size: v.size,
+                price: Number(v.price),
+                stock: Number(v.stock),
+              },
+            });
+          }
+        }
+      }
+    });
+
+    const product = await db.product.findUnique({
+      where: { id: params.id },
+      include: { images: true, variants: true },
+    });
+    return NextResponse.json({ product });
+  } catch (err) {
+    console.error("Product update failed:", err);
+    return NextResponse.json({ error: "Шинэчлэхэд алдаа гарлаа" }, { status: 500 });
+  }
 }
 
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
