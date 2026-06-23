@@ -13,6 +13,9 @@ export function MobileBottomNav() {
   const openCart = useCart((s) => s.open);
   const wishlistCount = useWishlist((s) => s.count());
 
+  // Hide the global nav during the focused checkout funnel.
+  if (pathname.startsWith("/checkout")) return null;
+
   const items = [
     { icon: Home, label: "Нүүр", href: "/" },
     { icon: LayoutGrid, label: "Ангилал", href: "/categories" },

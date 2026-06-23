@@ -127,7 +127,7 @@ function SuccessInner() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="inline-block bg-bg-secondary rounded-pill px-6 py-3 font-mono font-semibold mb-10"
+            className="inline-block bg-bg-soft border border-line rounded-pill px-6 py-3 font-mono font-semibold mb-10"
           >
             {orderNumber}
           </motion.div>
