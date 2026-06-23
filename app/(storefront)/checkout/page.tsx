@@ -7,7 +7,6 @@ import { useAuth } from "@/components/Providers";
 import { formatMNT } from "@/lib/utils";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { QrCode } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function CheckoutPage() {
@@ -148,22 +147,6 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          {/* Payment */}
-          <section className="bg-white rounded-3xl p-6 lg:p-8 border border-line">
-            <h2 className="font-bold text-lg mb-5">3. Төлбөр</h2>
-            <div className="flex items-center gap-4 p-4 rounded-2xl border-2 border-ink bg-bg-secondary">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm">
-                <QrCode className="w-6 h-6 text-ink" />
-              </div>
-              <div>
-                <div className="font-semibold text-sm">QPay-ээр төлөх</div>
-                <div className="text-xs text-ink-muted mt-0.5">
-                  Захиалах товч дарахад төлбөрийн хуудас руу шилжих ба QR кодоо банкны
-                  аппликейшнаараа уншуулна.
-                </div>
-              </div>
-            </div>
-          </section>
         </motion.div>
 
         {/* Summary */}
