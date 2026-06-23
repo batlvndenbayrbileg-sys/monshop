@@ -57,13 +57,44 @@ export default function CheckoutPage() {
       }),
     });
     const j = await r.json();
-    setLoading(false);
     if (!r.ok) {
+      setLoading(false);
       toast.error(j.error || "Захиалга үүсгэхэд алдаа гарлаа");
       return;
     }
+
+    const order = j.order;
     clear();
-    router.push(`/checkout/success?order=${j.order.orderNumber}`);
+
+    // QPay — go through Wire hosted checkout (PaymentIntent -> Checkout).
+    if (order.paymentMethod === "QPAY") {
+      try {
+        const pr = await fetch("/api/payments/intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: order.id }),
+        });
+        const pj = await pr.json();
+        if (pr.ok && pj.data?.checkoutUrl) {
+          window.location.href = pj.data.checkoutUrl; // pay.wire.mn
+          return;
+        }
+        // Mock mode (no hosted page) or already paid — confirm on success page.
+        router.push(
+          `/checkout/success?order=${order.orderNumber}&orderId=${order.id}&pay=1`
+        );
+        return;
+      } catch {
+        // Payment couldn't start, but the order exists — let them retry there.
+        router.push(
+          `/checkout/success?order=${order.orderNumber}&orderId=${order.id}&pay=1`
+        );
+        return;
+      }
+    }
+
+    setLoading(false);
+    router.push(`/checkout/success?order=${order.orderNumber}`);
   };
 
   return (

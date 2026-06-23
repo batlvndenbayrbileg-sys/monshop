@@ -56,7 +56,26 @@ export default async function AdminOrders({
                   <td className="px-6 py-3 text-ink-muted">{o.shippingPhone}</td>
                   <td className="px-6 py-3">{o.items.length}</td>
                   <td className="px-6 py-3 font-semibold">{formatMNT(o.total)}</td>
-                  <td className="px-6 py-3 text-xs">{o.paymentMethod}</td>
+                  <td className="px-6 py-3 text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <span>{o.paymentMethod}</span>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                          o.paymentStatus === "paid"
+                            ? "bg-green-100 text-green-700"
+                            : o.paymentStatus === "refunded"
+                            ? "bg-gray-100 text-gray-600"
+                            : "bg-amber-100 text-amber-700"
+                        }`}
+                      >
+                        {o.paymentStatus === "paid"
+                          ? "Төлсөн"
+                          : o.paymentStatus === "refunded"
+                          ? "Буцаасан"
+                          : "Төлөөгүй"}
+                      </span>
+                    </div>
+                  </td>
                   <td className="px-6 py-3">
                     <OrderStatusSelect id={o.id} status={o.status} />
                   </td>

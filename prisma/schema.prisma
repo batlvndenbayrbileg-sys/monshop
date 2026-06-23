@@ -130,6 +130,8 @@ model Order {
   phone           String
   status          String       @default("PENDING") // PENDING | PAID | SHIPPED | DELIVERED | CANCELLED
   paymentMethod   String       // QPAY | KHAN | TRANSFER | CASH
+  paymentStatus   String       @default("unpaid") // unpaid | paid | refunded
+  paymentIntentId String?      // Wire payment intent id
   subtotal        Int
   shippingCost    Int
   total           Int
