@@ -7,6 +7,7 @@ import { useAuth } from "@/components/Providers";
 import { formatMNT } from "@/lib/utils";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { QrCode } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function CheckoutPage() {
@@ -64,37 +65,36 @@ export default function CheckoutPage() {
     }
 
     const order = j.order;
-    clear();
 
-    // QPay — go through Wire hosted checkout (PaymentIntent -> Checkout).
-    if (order.paymentMethod === "QPAY") {
-      try {
-        const pr = await fetch("/api/payments/intent", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: order.id }),
-        });
-        const pj = await pr.json();
-        if (pr.ok && pj.data?.checkoutUrl) {
-          window.location.href = pj.data.checkoutUrl; // pay.wire.mn
-          return;
-        }
-        // Mock mode (no hosted page) or already paid — confirm on success page.
-        router.push(
-          `/checkout/success?order=${order.orderNumber}&orderId=${order.id}&pay=1`
-        );
-        return;
-      } catch {
-        // Payment couldn't start, but the order exists — let them retry there.
-        router.push(
-          `/checkout/success?order=${order.orderNumber}&orderId=${order.id}&pay=1`
-        );
+    // Always pay via Wire (QPay) hosted checkout.
+    try {
+      const pr = await fetch("/api/payments/intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: order.id }),
+      });
+      const pj = await pr.json();
+
+      if (!pr.ok) {
+        // Wire (live) failed — keep the cart and let them retry.
+        setLoading(false);
+        toast.error(pj.error || "Төлбөрийн системд холбогдоход алдаа гарлаа");
         return;
       }
-    }
 
-    setLoading(false);
-    router.push(`/checkout/success?order=${order.orderNumber}`);
+      clear();
+
+      if (pj.data?.checkoutUrl) {
+        window.location.href = pj.data.checkoutUrl; // → pay.wire.mn
+        return;
+      }
+
+      // Mock mode (no hosted page) or already paid — confirm on success page.
+      router.push(`/checkout/success?order=${order.orderNumber}&orderId=${order.id}&pay=1`);
+    } catch {
+      setLoading(false);
+      toast.error("Сүлжээний алдаа. Дахин оролдоно уу.");
+    }
   };
 
   return (
@@ -150,28 +150,18 @@ export default function CheckoutPage() {
 
           {/* Payment */}
           <section className="bg-white rounded-3xl p-6 lg:p-8 border border-line">
-            <h2 className="font-bold text-lg mb-5">3. Төлбөрийн хэрэгсэл</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {(
-                [
-                  { v: "QPAY", label: "QPay", desc: "QR код" },
-                  { v: "KHAN", label: "Хаан банк", desc: "Дансаар" },
-                  { v: "TRANSFER", label: "Шилжүүлэг", desc: "Гүйлгээ" },
-                  { v: "CASH", label: "Бэлнээр", desc: "Хүргэлтэн дээр" },
-                ] as const
-              ).map((p) => (
-                <button
-                  type="button"
-                  key={p.v}
-                  onClick={() => setForm({ ...form, paymentMethod: p.v })}
-                  className={`text-left p-4 rounded-2xl border-2 transition ${
-                    form.paymentMethod === p.v ? "border-ink bg-bg-secondary" : "border-line hover:border-ink-muted"
-                  }`}
-                >
-                  <div className="font-semibold text-sm">{p.label}</div>
-                  <div className="text-xs text-ink-muted mt-0.5">{p.desc}</div>
-                </button>
-              ))}
+            <h2 className="font-bold text-lg mb-5">3. Төлбөр</h2>
+            <div className="flex items-center gap-4 p-4 rounded-2xl border-2 border-ink bg-bg-secondary">
+              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm">
+                <QrCode className="w-6 h-6 text-ink" />
+              </div>
+              <div>
+                <div className="font-semibold text-sm">QPay-ээр төлөх</div>
+                <div className="text-xs text-ink-muted mt-0.5">
+                  Захиалах товч дарахад төлбөрийн хуудас руу шилжих ба QR кодоо банкны
+                  аппликейшнаараа уншуулна.
+                </div>
+              </div>
             </div>
           </section>
         </motion.div>
