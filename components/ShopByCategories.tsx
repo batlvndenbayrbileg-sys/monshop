@@ -2,69 +2,101 @@ import { db } from "@/lib/db";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
-import { Tilt3D } from "./Tilt3D";
+import { ArrowUpRight } from "lucide-react";
 
-// Local images - place files in /public/ to override
 const CATEGORY_IMAGES: Record<string, string> = {
-  cleansers: "/product5.png",     // Зөөлөн хөөстэй цэвэрлэгч
-  moisturizers: "/product2.png",  // Hyaluronic чийгшүүлэгч
-  serums: "/product1.png",        // Vitamin C сийрум
-  sunscreen: "/product3.png",     // Glow нарны тос
-  masks: "/product4.png",         // Сарнайн шавар маск
-  "lip-care": "/product2.png",    // placeholder
+  cleansers: "/product5.png",
+  moisturizers: "/product2.png",
+  serums: "/product1.png",
+  sunscreen: "/product3.png",
+  masks: "/product4.png",
+  toners: "/product5.png",
+  "eye-care": "/product1.png",
+  "lip-care": "/product2.png",
 };
+const FALLBACK = "/product1.png";
 
 export async function ShopByCategories() {
   const categories = (
     await db.category.findMany({
       include: { _count: { select: { products: true } } },
-      orderBy: { name: "asc" },
+      orderBy: { products: { _count: "desc" } },
     })
   ).slice(0, 5);
 
+  if (categories.length === 0) return null;
+  const [feature, ...rest] = categories;
+
   return (
-    <section className="py-16 lg:py-24 bg-white">
+    <section className="py-20 lg:py-32 bg-white">
       <div className="max-w-8xl mx-auto px-6 lg:px-12">
         <Reveal>
-          <div className="text-center mb-12 lg:mb-16">
-            <h2 className="font-serif text-3xl lg:text-5xl tracking-tight">
-              Ангиллаар сонгох
-            </h2>
+          <div className="flex items-end justify-between mb-12 lg:mb-16">
+            <div>
+              <div className="eyebrow text-brand-pink mb-4">— Ангилал</div>
+              <h2 className="font-serif text-4xl lg:text-6xl tracking-tight leading-[1]">
+                Юу хайж <span className="italic text-brand-pink">байна</span> вэ?
+              </h2>
+            </div>
+            <Link
+              href="/categories"
+              className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold tracking-widest uppercase link-reveal"
+            >
+              Бүх ангилал →
+            </Link>
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-5">
-          {categories.map((c, i) => (
-            <Reveal key={c.id} delay={i * 0.06}>
-              <Link href={`/categories/${c.slug}`} className="card-3d block group">
-                <Tilt3D max={8} className="rounded-3xl">
-                  <div className="relative bg-card-pink rounded-3xl p-5 lg:p-6 text-center shadow-3d edge-highlight overflow-hidden">
-                    {/* Subtle radial glow */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-white/60 blur-2xl pointer-events-none" />
+        {/* Editorial asymmetric grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          {/* Feature — large, spans 2 cols + 2 rows on desktop */}
+          <Reveal className="col-span-2 lg:row-span-2">
+            <Link
+              href={`/categories/${feature.slug}`}
+              className="group relative block h-full min-h-[280px] lg:min-h-[560px] rounded-[28px] overflow-hidden"
+            >
+              <Image
+                src={CATEGORY_IMAGES[feature.slug] ?? FALLBACK}
+                alt={feature.name}
+                fill
+                sizes="50vw"
+                className="object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+              <div className="absolute top-6 left-6 bg-white/90 backdrop-blur rounded-full px-4 py-1.5 text-[11px] font-semibold tracking-widest uppercase">
+                Онцлох
+              </div>
+              <div className="absolute bottom-7 left-7 right-7 flex items-end justify-between text-white">
+                <div>
+                  <div className="font-serif text-4xl lg:text-5xl tracking-tight">{feature.name}</div>
+                  <div className="font-sans text-sm text-white/80 mt-2">{feature._count.products} бараа</div>
+                </div>
+                <span className="w-14 h-14 rounded-full bg-white text-ink flex items-center justify-center shrink-0 group-hover:rotate-45 transition-transform duration-300">
+                  <ArrowUpRight className="w-6 h-6" />
+                </span>
+              </div>
+            </Link>
+          </Reveal>
 
-                    <div
-                      className="relative aspect-[4/3] mb-5 overflow-hidden rounded-2xl shadow-soft-pink"
-                      style={{ transform: "translateZ(30px)" }}
-                    >
-                      {CATEGORY_IMAGES[c.slug] && (
-                        <Image
-                          src={CATEGORY_IMAGES[c.slug]}
-                          alt={c.name}
-                          fill
-                          sizes="240px"
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                      )}
-                    </div>
-                    <div
-                      className="relative"
-                      style={{ transform: "translateZ(20px)" }}
-                    >
-                      <div className="font-semibold text-base lg:text-lg mb-1">{c.name}</div>
-                      <div className="text-xs text-ink-muted">{c._count.products} бараа</div>
-                    </div>
-                  </div>
-                </Tilt3D>
+          {/* Rest — smaller tiles */}
+          {rest.map((c, i) => (
+            <Reveal key={c.id} delay={0.1 + i * 0.08}>
+              <Link
+                href={`/categories/${c.slug}`}
+                className="group relative block aspect-[4/3] lg:aspect-auto lg:h-[268px] rounded-[24px] overflow-hidden"
+              >
+                <Image
+                  src={CATEGORY_IMAGES[c.slug] ?? FALLBACK}
+                  alt={c.name}
+                  fill
+                  sizes="25vw"
+                  className="object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+                <div className="absolute bottom-5 left-5 right-5 text-white">
+                  <div className="font-serif text-2xl tracking-tight">{c.name}</div>
+                  <div className="font-sans text-[11px] text-white/75 mt-1">{c._count.products} бараа</div>
+                </div>
               </Link>
             </Reveal>
           ))}
