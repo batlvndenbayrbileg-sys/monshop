@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { ShoppingBag, Heart, Truck, RotateCcw, Leaf } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCart } from "@/lib/cart-store";
@@ -20,6 +21,7 @@ type Product = {
   rating?: number | null;
   reviewCount?: number;
   category?: string | null;
+  tags?: string[];
   images: string[];
   colors: { name: string; hex: string }[];
   sizes: string[];
@@ -150,7 +152,22 @@ export function ProductDetail({ product }: { product: Product }) {
             )}
           </div>
 
-          <p className="text-ink-muted leading-relaxed mb-10">{product.description}</p>
+          <p className="text-ink-muted leading-relaxed mb-8">{product.description}</p>
+
+          {/* Tags */}
+          {product.tags && product.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-10">
+              {product.tags.map((t) => (
+                <Link
+                  key={t}
+                  href={`/shop?tag=${encodeURIComponent(t)}`}
+                  className="text-xs font-medium border border-line rounded-pill px-3.5 py-1.5 hover:border-brand-pink hover:text-brand-pink transition"
+                >
+                  #{t}
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Color */}
           <div className="mb-8">

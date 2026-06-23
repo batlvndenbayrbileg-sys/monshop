@@ -26,6 +26,7 @@ const createSchema = z.object({
   oldPrice: z.number().int().optional().nullable(),
   badge: z.string().optional().nullable(),
   categoryId: z.string().optional().nullable(),
+  tags: z.array(z.string()).optional(),
   images: z.array(z.string().url()).min(1),
   variants: z
     .array(
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
       oldPrice: d.oldPrice ?? null,
       badge: d.badge ?? null,
       categoryId: d.categoryId ?? null,
+      tags: d.tags ?? [],
       images: { create: d.images.map((url, position) => ({ url, position })) },
       variants: {
         create: d.variants.map((v) => ({

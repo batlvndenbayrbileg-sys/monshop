@@ -33,6 +33,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
           oldPrice: body.oldPrice ? Number(body.oldPrice) : null,
           badge: body.badge || null,
           status: body.status,
+          categoryId: body.categoryId || null,
+          ...(Array.isArray(body.tags) ? { tags: body.tags } : {}),
         },
       });
 

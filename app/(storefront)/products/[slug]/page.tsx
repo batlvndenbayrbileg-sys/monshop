@@ -33,6 +33,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
         rating: p.rating,
         reviewCount: p.reviewCount,
         category: p.category?.name,
+        tags: p.tags ?? [],
         images: p.images.map((i) => i.url),
         colors,
         sizes,

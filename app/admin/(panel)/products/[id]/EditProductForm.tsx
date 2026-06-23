@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Plus, Trash2 } from "lucide-react";
 import { ImageUploader } from "@/components/ImageUploader";
+import { TagInput } from "@/components/TagInput";
 
 type Variant = { id?: string; size: string; price: number; stock: number; color?: string; colorHex?: string };
+type Cat = { id: string; name: string };
 
 export function EditProductForm({ product }: { product: any }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<Cat[]>([]);
+  const [categoryId, setCategoryId] = useState<string>(product.categoryId ?? "");
+  const [tags, setTags] = useState<string[]>(product.tags ?? []);
   const [form, setForm] = useState({
     name: product.name,
     description: product.description,
@@ -19,6 +24,13 @@ export function EditProductForm({ product }: { product: any }) {
     badge: product.badge ?? "",
     status: product.status,
   });
+
+  useEffect(() => {
+    fetch("/api/admin/categories")
+      .then((r) => r.json())
+      .then((j) => setCategories(j.categories ?? []))
+      .catch(() => {});
+  }, []);
   const [images, setImages] = useState<string[]>(
     product.images?.length ? product.images.map((i: any) => i.url) : [""]
   );
@@ -39,6 +51,8 @@ export function EditProductForm({ product }: { product: any }) {
         basePrice: Number(form.basePrice),
         oldPrice: form.oldPrice ? Number(form.oldPrice) : null,
         badge: form.badge || null,
+        categoryId: categoryId || null,
+        tags,
         images: images.filter((u) => u.trim()),
         variants,
       }),
@@ -114,6 +128,25 @@ export function EditProductForm({ product }: { product: any }) {
               </select>
             </div>
           </div>
+          <div>
+            <Label>АНГИЛАЛ</Label>
+            <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}
+              className="w-full bg-bg-secondary border border-line rounded-pill px-5 py-3 text-sm">
+              <option value="">— Ангилалгүй —</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+        </section>
+
+        {/* Tags */}
+        <section className="bg-white rounded-3xl border border-line p-6 lg:p-8">
+          <h2 className="font-bold mb-1">Тагууд</h2>
+          <p className="text-xs text-ink-muted mb-4">
+            Асуудал, найрлагаар хайхад ашиглана. Хэрэглэгч нүүр хуудаснаас таг дээр дарахад энэ бараа шүүгдэж гарна.
+          </p>
+          <TagInput value={tags} onChange={setTags} />
         </section>
 
         {/* Images */}

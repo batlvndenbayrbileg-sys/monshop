@@ -4,11 +4,12 @@ export const dynamic = "force-dynamic";
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { useAuth } from "@/components/Providers";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, Sparkles } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
@@ -51,26 +52,23 @@ function LoginForm() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-md relative z-10"
       >
-        {/* Mascot + brand */}
+        {/* Logo */}
         <Link href="/" className="block text-center mb-8">
           <motion.div
-            initial={{ scale: 0, rotate: -45 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ delay: 0.15, type: "spring", damping: 14 }}
-            className="relative inline-block mb-3"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1, type: "spring", damping: 14 }}
+            className="inline-block"
           >
-            <span className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-rose to-brand-pink flex items-center justify-center shadow-float">
-              <Sparkles className="w-8 h-8 text-white" strokeWidth={2.2} />
-            </span>
-            <motion.span
-              animate={{ rotate: 360 }}
-              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-brand-gold flex items-center justify-center text-white text-xs"
-            >
-              ✦
-            </motion.span>
+            <Image
+              src="/logo.png"
+              alt="monshop"
+              width={180}
+              height={64}
+              priority
+              className="h-16 w-auto mx-auto object-contain"
+            />
           </motion.div>
-          <div className="font-serif text-3xl text-brand-pink tracking-tight">monshop</div>
         </Link>
 
         {/* Card with gradient top accent */}

@@ -261,7 +261,7 @@ export function MobileHome({ products, categories }: { products: P[]; categories
             { Icon: Clock, t: "Хөгшрөлт" },
             { Icon: ShieldCheck, t: "Батга" },
           ].map((x) => (
-            <Link key={x.t} href="/shop" className="shrink-0 flex flex-col items-center gap-2 w-[64px]">
+            <Link key={x.t} href={`/shop?tag=${encodeURIComponent(x.t)}`} className="shrink-0 flex flex-col items-center gap-2 w-[64px]">
               <div className="w-14 h-14 rounded-full bg-[#F2E6DF] flex items-center justify-center">
                 <x.Icon className="w-5 h-5 text-brand-pink" strokeWidth={1.5} />
               </div>
@@ -280,7 +280,7 @@ export function MobileHome({ products, categories }: { products: P[]; categories
             { t: "Niacinamide", s: "Гэрэлтэлт", img: "/product1.png" },
             { t: "Vitamin C", s: "Тод байдал", img: "/product3.png" },
           ].map((x) => (
-            <Link key={x.t} href="/shop" className="block">
+            <Link key={x.t} href={`/shop?tag=${encodeURIComponent(x.t)}`} className="block">
               {/* Image tile */}
               <div className="relative aspect-square rounded-2xl overflow-hidden mb-2 bg-[#F2E6DF]">
                 <Image src={x.img} alt={x.t} fill sizes="120px" className="object-cover" />

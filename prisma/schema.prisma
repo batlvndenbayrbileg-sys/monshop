@@ -58,6 +58,7 @@ model Product {
   oldPrice    Int?
   status      String    @default("ACTIVE") // ACTIVE | DRAFT | ARCHIVED
   badge       String?   // ШИНЭ | ХЯМДРАЛ | ОНЦЛОХ
+  tags        String[]  @default([]) // concern / ingredient filters
   rating      Float?
   reviewCount Int       @default(0)
 

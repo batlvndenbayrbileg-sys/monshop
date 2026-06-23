@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Plus, Trash2 } from "lucide-react";
 import { ImageUploader } from "@/components/ImageUploader";
+import { TagInput } from "@/components/TagInput";
+
+type Cat = { id: string; name: string };
 
 export default function NewProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<Cat[]>([]);
+  const [categoryId, setCategoryId] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [form, setForm] = useState({
     name: "",
     slug: "",
@@ -19,6 +25,13 @@ export default function NewProductPage() {
     variants: [{ color: "Black", colorHex: "#000000", size: "M", stock: 10 }],
   });
 
+  useEffect(() => {
+    fetch("/api/admin/categories")
+      .then((r) => r.json())
+      .then((j) => setCategories(j.categories ?? []))
+      .catch(() => {});
+  }, []);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -27,6 +40,8 @@ export default function NewProductPage() {
       images: form.images.filter((i) => i.trim()),
       badge: form.badge || null,
       basePrice: Number(form.basePrice),
+      categoryId: categoryId || null,
+      tags,
     };
     const r = await fetch("/api/admin/products", {
       method: "POST",
@@ -84,6 +99,23 @@ export default function NewProductPage() {
               <option value="ОНЦЛОХ">ОНЦЛОХ</option>
             </select>
           </div>
+        </div>
+        <div>
+          <Label>АНГИЛАЛ</Label>
+          <select
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            className="w-full bg-bg-secondary border border-line rounded-pill px-5 py-3 text-sm"
+          >
+            <option value="">— Ангилалгүй —</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <Label>ТАГУУД</Label>
+          <TagInput value={tags} onChange={setTags} />
         </div>
       </div>
 
