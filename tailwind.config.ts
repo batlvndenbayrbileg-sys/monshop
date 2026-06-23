@@ -8,10 +8,13 @@ const config: Config = {
         bg: {
           primary: "#FFFFFF",
           soft: "#FFF5F5",
+          secondary: "#FAF6F2",
+          tertiary: "#F3ECE7",
           blush: "#FCE4EC",
           rose: "#F8D7DC",
           peach: "#FFE9E0",
           dark: "#1A1A1A",
+          deepest: "#171717",
         },
         ink: {
           DEFAULT: "#1F1F1F",
@@ -27,6 +30,8 @@ const config: Config = {
           coral: "#FF8A95",
           mauve: "#D87093",
           gold: "#E0BF7A",
+          champagne: "#E0BF7A",
+          green: "#5BA85D",
         },
         line: {
           DEFAULT: "#F0E0E4",

@@ -33,7 +33,7 @@ export function CartDrawer() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="fixed top-0 right-0 h-full w-full sm:w-[460px] bg-bg-primary z-[70] flex flex-col"
           >
-            <div className="px-8 py-6 border-b border-line-subtle flex items-center justify-between">
+            <div className="px-5 sm:px-8 py-5 sm:py-6 border-b border-line-subtle flex items-center justify-between">
               <div>
                 <div className="eyebrow text-ink-subtle mb-1">Сагс</div>
                 <div className="font-serif text-2xl">{items.length} бараа</div>
@@ -45,7 +45,7 @@ export function CartDrawer() {
 
             {/* Free shipping progress */}
             {items.length > 0 && (
-              <div className="px-8 py-4 border-b border-line-subtle bg-bg-secondary">
+              <div className="px-5 sm:px-8 py-4 border-b border-line-subtle bg-bg-secondary">
                 {remaining > 0 ? (
                   <>
                     <div className="text-xs text-ink-muted mb-2">
@@ -69,7 +69,7 @@ export function CartDrawer() {
             )}
 
             {/* Items */}
-            <div className="flex-1 overflow-y-auto px-8 py-6">
+            <div className="flex-1 overflow-y-auto px-5 sm:px-8 py-6">
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center gap-4">
                   <ShoppingBag className="w-12 h-12 text-ink-faint mb-2" strokeWidth={1} />
@@ -153,7 +153,7 @@ export function CartDrawer() {
             </div>
 
             {items.length > 0 && (
-              <div className="px-8 py-6 border-t border-line-subtle space-y-3 bg-bg-primary">
+              <div className="px-5 sm:px-8 py-6 border-t border-line-subtle space-y-3 bg-bg-primary">
                 <div className="flex justify-between text-sm">
                   <span className="text-ink-muted">Дэд дүн</span>
                   <span>{formatMNT(subtotal)}</span>

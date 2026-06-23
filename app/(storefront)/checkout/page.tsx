@@ -184,7 +184,7 @@ export default function CheckoutPage() {
         <div className="flex items-center justify-between mb-5 lg:mb-8">
           <div className="flex items-center gap-3">
             <Link
-              href="/cart"
+              href="/shop"
               className="w-9 h-9 rounded-full bg-white border border-line flex items-center justify-center shrink-0 hover:bg-bg-soft transition"
               aria-label="Буцах"
             >

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Heart, Truck, RotateCcw, Leaf } from "lucide-react";
@@ -31,14 +31,32 @@ export function ProductDetail({ product }: { product: Product }) {
   const [size, setSize] = useState<string | null>(null);
   const [imageIdx, setImageIdx] = useState(0);
   const add = useCart((s) => s.add);
+  const openCart = useCart((s) => s.open);
+  const sizeRef = useRef<HTMLDivElement>(null);
 
   const selectedVariant = product.variants.find(
     (v) => v.color === color.name && v.size === size
   );
   const inStock = selectedVariant ? selectedVariant.stock > 0 : false;
+  const displayPrice = selectedVariant?.price ?? product.price;
+
+  // Auto-select size when only one is in stock for the chosen colour.
+  useEffect(() => {
+    const inStockSizes = product.sizes.filter((s) =>
+      product.variants.some((v) => v.color === color.name && v.size === s && v.stock > 0)
+    );
+    if (inStockSizes.length === 1) setSize(inStockSizes[0]);
+  }, [color, product.sizes, product.variants]);
+
+  const focusSize = () => {
+    sizeRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
 
   const addToCart = () => {
-    if (!size) return toast.error("Хэмжээ сонгоно уу");
+    if (!size) {
+      focusSize();
+      return toast.error("Хэмжээ сонгоно уу");
+    }
     if (!selectedVariant || selectedVariant.stock <= 0) return toast.error("Үлдэгдэл байхгүй");
     add({
       productId: product.id,
@@ -53,6 +71,7 @@ export function ProductDetail({ product }: { product: Product }) {
       quantity: 1,
     });
     toast.success("Сагсанд нэмэгдлээ");
+    openCart();
   };
 
   return (
@@ -122,7 +141,7 @@ export function ProductDetail({ product }: { product: Product }) {
           )}
           <div className="flex items-baseline gap-3 mb-10 pb-10 border-b border-line">
             <span className={`font-serif text-3xl ${product.oldPrice ? "text-state-sale" : ""}`}>
-              {formatMNT(product.price)}
+              {formatMNT(displayPrice)}
             </span>
             {product.oldPrice && (
               <span className="text-base text-ink-subtle line-through">
@@ -155,7 +174,7 @@ export function ProductDetail({ product }: { product: Product }) {
           </div>
 
           {/* Size */}
-          <div className="mb-10">
+          <div className="mb-10 scroll-mt-28" ref={sizeRef}>
             <div className="flex justify-between items-baseline mb-4">
               <span className="eyebrow text-ink">Хэмжээ</span>
               <button className="text-xs text-ink-muted link-underline">Хэмжээний заавар</button>
@@ -226,7 +245,7 @@ export function ProductDetail({ product }: { product: Product }) {
           <div className="flex-1 min-w-0">
             <div className="text-[10px] text-ink-muted truncate">{product.name}</div>
             <div className="font-semibold text-base">
-              {formatMNT(product.price)}
+              {formatMNT(displayPrice)}
               {size && (
                 <span className="text-xs text-ink-muted ml-2">· {color.name}/{size}</span>
               )}
@@ -234,13 +253,13 @@ export function ProductDetail({ product }: { product: Product }) {
           </div>
           <motion.button
             whileTap={{ scale: 0.96 }}
-            onClick={addToCart}
-            disabled={!size || !inStock}
-            className="btn-3d rounded-pill px-5 py-3 text-xs font-semibold text-white flex items-center justify-center gap-2 shrink-0 disabled:opacity-50"
+            onClick={size ? addToCart : focusSize}
+            disabled={!!size && !inStock}
+            className="btn-3d rounded-pill px-6 py-3 text-xs font-semibold text-white flex items-center justify-center gap-2 shrink-0 disabled:opacity-50"
             style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}
           >
             <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.8} />
-            {size ? (inStock ? "Сагсанд" : "Дууссан") : "Хэмжээ"}
+            {size ? (inStock ? "Сагсанд нэмэх" : "Дууссан") : "Хэмжээ сонгох"}
           </motion.button>
         </div>
       </div>
