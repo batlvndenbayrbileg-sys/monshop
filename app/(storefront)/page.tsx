@@ -4,14 +4,8 @@ import { ShopByCategories } from "@/components/ShopByCategories";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { CustomerReviews } from "@/components/CustomerReviews";
 import { MobileHome } from "@/components/MobileHome";
-import {
-  BrandStory,
-  Results,
-  WhyChooseUs,
-  TrendingEditorial,
-  InstagramGallery,
-  NewsletterCTA,
-} from "@/components/Editorial";
+import { FeaturedCarousel } from "@/components/FeaturedCarousel";
+import { BrandStory, WhyChooseUs } from "@/components/Editorial";
 
 export const dynamic = "force-dynamic";
 
@@ -81,12 +75,9 @@ export default async function HomePage() {
           <ShopByCategories />
           <FeaturedProducts products={featured} />
           <BrandStory />
-          <Results />
           <WhyChooseUs />
-          <TrendingEditorial />
+          <FeaturedCarousel products={all} />
           <CustomerReviews />
-          <InstagramGallery />
-          <NewsletterCTA />
         </HomeScroll>
       </div>
     </>
