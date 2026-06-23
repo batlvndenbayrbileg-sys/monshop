@@ -196,10 +196,11 @@ export default async function CategoriesPage() {
                           alt={c.name}
                           fill
                           sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-contain p-6 transition-transform duration-700 group-hover:scale-110"
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                       )}
-                      <div className="absolute top-3 right-3 bg-white rounded-full px-3 py-1 text-[10px] font-semibold tracking-widest shadow-sm">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-3 py-1 text-[10px] font-semibold tracking-widest shadow-sm">
                         {c._count.products} БАРАА
                       </div>
                     </div>

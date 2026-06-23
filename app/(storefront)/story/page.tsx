@@ -171,11 +171,46 @@ export default function StoryPage() {
             </motion.p>
           </div>
 
-          {/* Hero image */}
+          {/* Hero image — premium editorial frame */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="relative hidden lg:block"
+          >
+            <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-3d">
+              <Image
+                src="/hero.png"
+                alt="monshop"
+                fill
+                priority
+                sizes="45vw"
+                className="object-cover object-top"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+            </div>
+            {/* floating stat badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.9 }}
+              className="absolute -bottom-6 -left-6 bg-white rounded-3xl p-5 shadow-float w-44"
+            >
+              <div className="font-serif text-4xl text-brand-pink leading-none">10K+</div>
+              <div className="font-sans text-xs text-ink-muted mt-1.5">Сэтгэл ханамжтай хэрэглэгч</div>
+            </motion.div>
+            {/* est badge */}
+            <div className="absolute top-6 right-6 bg-white/85 backdrop-blur rounded-full px-4 py-2 text-[11px] font-semibold tracking-[0.2em] text-brand-pink">
+              EST. 2026
+            </div>
+          </motion.div>
+
+          {/* Mobile: orb */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="lg:hidden"
           >
             <ProductOrb />
           </motion.div>
