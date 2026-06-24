@@ -3,6 +3,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { orderNumber } from "@/lib/utils";
+import { validateCoupon } from "@/lib/coupon";
 
 const itemSchema = z.object({
   variantId: z.string(),
@@ -20,6 +21,7 @@ const schema = z.object({
   shippingStreet: z.string().min(1),
   shippingZip: z.string().optional(),
   notes: z.string().optional(),
+  couponCode: z.string().nullable().optional(),
   items: z.array(itemSchema).min(1),
 });
 
@@ -80,7 +82,19 @@ export async function POST(req: Request) {
     }
 
     const shippingCost = subtotal >= 100000 ? 0 : 8000;
-    const total = subtotal + shippingCost;
+
+    // Re-validate the coupon server-side so the discount can never be faked.
+    let discount = 0;
+    let couponCode: string | null = null;
+    if (data.couponCode) {
+      const res = await validateCoupon(data.couponCode, subtotal);
+      if (res.ok) {
+        discount = res.discount;
+        couponCode = res.code;
+      }
+    }
+
+    const total = Math.max(0, subtotal - discount) + shippingCost;
 
     const order = await db.$transaction(async (tx) => {
       const o = await tx.order.create({
@@ -92,6 +106,8 @@ export async function POST(req: Request) {
           paymentMethod: data.paymentMethod,
           subtotal,
           shippingCost,
+          discount,
+          couponCode,
           total,
           shippingName: data.shippingName,
           shippingPhone: data.shippingPhone,

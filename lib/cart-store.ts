@@ -16,15 +16,19 @@ export type CartItem = {
   quantity: number;
 };
 
+export type AppliedCoupon = { code: string; discount: number };
+
 type CartState = {
   items: CartItem[];
   isOpen: boolean;
+  coupon: AppliedCoupon | null;
   open: () => void;
   close: () => void;
   toggle: () => void;
   add: (item: CartItem) => void;
   remove: (variantId: string) => void;
   setQty: (variantId: string, qty: number) => void;
+  setCoupon: (c: AppliedCoupon | null) => void;
   clear: () => void;
   total: () => number;
   count: () => number;
@@ -35,6 +39,7 @@ export const useCart = create<CartState>()(
     (set, get) => ({
       items: [],
       isOpen: false,
+      coupon: null,
       open: () => set({ isOpen: true }),
       close: () => set({ isOpen: false }),
       toggle: () => set((s) => ({ isOpen: !s.isOpen })),
@@ -64,7 +69,8 @@ export const useCart = create<CartState>()(
                   i.variantId === variantId ? { ...i, quantity: qty } : i
                 ),
         })),
-      clear: () => set({ items: [] }),
+      setCoupon: (c) => set({ coupon: c }),
+      clear: () => set({ items: [], coupon: null }),
       total: () => get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
       count: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
     }),

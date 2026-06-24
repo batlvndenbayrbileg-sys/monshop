@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingBag, Users, FolderTree } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Users, FolderTree, Ticket } from "lucide-react";
 
 const LINKS = [
   { href: "/admin", icon: LayoutDashboard, label: "Тойм" },
   { href: "/admin/products", icon: Package, label: "Бараа" },
   { href: "/admin/categories", icon: FolderTree, label: "Ангилал" },
+  { href: "/admin/coupons", icon: Ticket, label: "Купон" },
   { href: "/admin/orders", icon: ShoppingBag, label: "Захиалга" },
   { href: "/admin/users", icon: Users, label: "Хэрэглэгч" },
 ];

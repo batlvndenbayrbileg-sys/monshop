@@ -70,12 +70,13 @@ function validate(f: Form): Partial<Record<keyof Form, string>> {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, total, clear } = useCart();
+  const { items, total, clear, coupon } = useCart();
   const { user } = useAuth();
 
   const subtotal = total();
   const shipping = subtotal >= 100000 ? 0 : 8000;
-  const grandTotal = subtotal + shipping;
+  const discount = coupon ? Math.min(coupon.discount, subtotal) : 0;
+  const grandTotal = Math.max(0, subtotal - discount) + shipping;
   const itemCount = items.reduce((s, i) => s + i.quantity, 0);
   const freeShipGap = Math.max(0, 100000 - subtotal);
 
@@ -178,6 +179,7 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           ...form,
           paymentMethod: "QPAY",
+          couponCode: coupon?.code ?? null,
           items: items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
         }),
       });
@@ -296,7 +298,7 @@ export default function CheckoutPage() {
               >
                 <div className="bg-white rounded-2xl border border-line mt-2 p-4">
                   <ItemList items={items} />
-                  <Totals subtotal={subtotal} shipping={shipping} grandTotal={grandTotal} />
+                  <Totals subtotal={subtotal} shipping={shipping} grandTotal={grandTotal} discount={discount} couponCode={coupon?.code} />
                 </div>
               </motion.div>
             )}
@@ -465,7 +467,7 @@ export default function CheckoutPage() {
             <div className="sticky top-28 bg-white rounded-3xl border border-line p-6">
               <h2 className="font-semibold text-lg mb-4">Захиалгын дүн</h2>
               <ItemList items={items} />
-              <Totals subtotal={subtotal} shipping={shipping} grandTotal={grandTotal} />
+              <Totals subtotal={subtotal} shipping={shipping} grandTotal={grandTotal} discount={discount} couponCode={coupon?.code} />
 
               {freeShipGap > 0 && (
                 <div className="mt-4 text-xs text-ink-muted bg-soft-pink rounded-xl px-3 py-2.5 flex items-center gap-2">
@@ -653,10 +655,14 @@ function Totals({
   subtotal,
   shipping,
   grandTotal,
+  discount = 0,
+  couponCode,
 }: {
   subtotal: number;
   shipping: number;
   grandTotal: number;
+  discount?: number;
+  couponCode?: string | null;
 }) {
   return (
     <>
@@ -669,6 +675,12 @@ function Totals({
           <span className="text-ink-muted">Хүргэлт</span>
           <span className="font-medium">{shipping === 0 ? "Үнэгүй" : formatMNT(shipping)}</span>
         </div>
+        {discount > 0 && (
+          <div className="flex justify-between text-green-700">
+            <span>Хямдрал{couponCode ? ` (${couponCode})` : ""}</span>
+            <span className="font-medium">−{formatMNT(discount)}</span>
+          </div>
+        )}
       </div>
       <div className="flex justify-between items-baseline pt-3 mt-3 border-t border-line">
         <span className="font-semibold">Нийт</span>

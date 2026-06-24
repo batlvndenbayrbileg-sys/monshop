@@ -136,6 +136,8 @@ model Order {
   paymentIntentId String?      // Wire payment intent id
   subtotal        Int
   shippingCost    Int
+  discount        Int          @default(0)
+  couponCode      String?
   total           Int
 
   shippingName    String
@@ -149,6 +151,16 @@ model Order {
   items           OrderItem[]
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
+}
+
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique // stored uppercase
+  discount    Int       // MNT amount off
+  minSubtotal Int       @default(0) // minimum cart subtotal to qualify
+  active      Boolean   @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
 }
 
 model OrderItem {
