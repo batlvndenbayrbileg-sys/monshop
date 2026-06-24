@@ -12,34 +12,39 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const parsed = schema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json(
-      { error: parsed.error.errors[0].message },
-      { status: 400 }
-    );
+  try {
+    const body = await req.json().catch(() => null);
+    const parsed = schema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.errors[0].message },
+        { status: 400 }
+      );
+    }
+    const { email, password, name, phone } = parsed.data;
+
+    const existing = await db.user.findUnique({ where: { email } });
+    if (existing) {
+      return NextResponse.json({ error: "Имэйл бүртгэгдсэн байна" }, { status: 400 });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await db.user.create({
+      data: { email, passwordHash, name, phone, role: "CUSTOMER" },
+    });
+
+    const token = await signSession({
+      userId: user.id,
+      email: user.email,
+      role: "CUSTOMER",
+    });
+    await setSessionCookie(token);
+
+    return NextResponse.json({
+      user: { id: user.id, email: user.email, name: user.name, role: user.role },
+    });
+  } catch (err) {
+    console.error("Register failed:", err);
+    return NextResponse.json({ error: "Алдаа гарлаа. Дахин оролдоно уу." }, { status: 500 });
   }
-  const { email, password, name, phone } = parsed.data;
-
-  const existing = await db.user.findUnique({ where: { email } });
-  if (existing) {
-    return NextResponse.json({ error: "Имэйл бүртгэгдсэн байна" }, { status: 400 });
-  }
-
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = await db.user.create({
-    data: { email, passwordHash, name, phone, role: "CUSTOMER" },
-  });
-
-  const token = await signSession({
-    userId: user.id,
-    email: user.email,
-    role: "CUSTOMER",
-  });
-  await setSessionCookie(token);
-
-  return NextResponse.json({
-    user: { id: user.id, email: user.email, name: user.name, role: user.role },
-  });
 }

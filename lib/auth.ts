@@ -58,10 +58,17 @@ export async function getSession(): Promise<SessionPayload | null> {
 export async function getCurrentUser() {
   const s = await getSession();
   if (!s) return null;
-  return db.user.findUnique({
-    where: { id: s.userId },
-    select: { id: true, email: true, name: true, phone: true, role: true, image: true },
-  });
+  try {
+    return await db.user.findUnique({
+      where: { id: s.userId },
+      select: { id: true, email: true, name: true, phone: true, role: true, image: true },
+    });
+  } catch (err) {
+    // A transient DB hiccup (e.g. serverless cold start) should not crash the
+    // whole page — treat it as logged-out rather than throwing a 500.
+    console.error("getCurrentUser DB error:", err);
+    return null;
+  }
 }
 
 export async function requireUser() {

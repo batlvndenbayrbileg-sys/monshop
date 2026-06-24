@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Instagram, Facebook, Twitter, Youtube, Send } from "lucide-react";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 const LINKS = [
   { label: "Нүүр", href: "/" },
@@ -90,6 +91,12 @@ export function Footer() {
 
         {/* Newsletter */}
         <motion.form
+          onSubmit={(e) => {
+            e.preventDefault();
+            toast.success("Амжилттай бүртгүүллээ!");
+            (e.currentTarget.querySelector("input") as HTMLInputElement | null)?.blur();
+            e.currentTarget.reset();
+          }}
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}

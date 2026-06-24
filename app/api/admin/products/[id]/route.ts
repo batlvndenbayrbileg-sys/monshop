@@ -92,6 +92,17 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
   if (!(await guard())) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-  await db.product.delete({ where: { id: params.id } });
-  return NextResponse.json({ ok: true });
+  try {
+    const ordered = await db.orderItem.count({ where: { productId: params.id } });
+    if (ordered > 0) {
+      // Keep order history intact — archive instead of hard-deleting.
+      await db.product.update({ where: { id: params.id }, data: { status: "ARCHIVED" } });
+      return NextResponse.json({ ok: true, archived: true });
+    }
+    await db.product.delete({ where: { id: params.id } });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Product delete failed:", err);
+    return NextResponse.json({ error: "Устгахад алдаа гарлаа" }, { status: 500 });
+  }
 }
