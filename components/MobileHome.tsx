@@ -8,7 +8,7 @@ import { useWishlist } from "@/lib/wishlist-store";
 import { useCart } from "@/lib/cart-store";
 import { useAuth } from "@/components/Providers";
 import {
-  Search, Camera, Bell, Truck, ShieldCheck, Heart, Lock, Plus, ShoppingBag,
+  Search, Bell, Truck, ShieldCheck, Heart, Lock, Plus, ShoppingBag,
   Leaf, FlaskConical, Globe, Star, ChevronRight, Droplet, Sun, Clock, Sparkles,
 } from "lucide-react";
 
@@ -161,7 +161,7 @@ export function MobileHome({ products, categories }: { products: P[]; categories
               </span>
             )}
           </button>
-          <Link href="/account" aria-label="Профайл" className="w-10 h-10 rounded-full bg-bg-soft flex items-center justify-center">
+          <Link href="/account/notifications" aria-label="Мэдэгдэл" className="w-10 h-10 rounded-full bg-bg-soft flex items-center justify-center">
             <Bell className="w-[18px] h-[18px] text-ink" strokeWidth={1.8} />
           </Link>
         </div>
@@ -170,15 +170,14 @@ export function MobileHome({ products, categories }: { products: P[]; categories
       {/* Search */}
       <div className="px-5 pb-3">
         <form action="/shop" className="flex items-center gap-3 bg-bg-soft rounded-pill px-4 py-3">
-          <Search className="w-[18px] h-[18px] text-ink-subtle" strokeWidth={1.8} />
+          <button type="submit" aria-label="Хайх" className="shrink-0">
+            <Search className="w-[18px] h-[18px] text-ink-subtle" strokeWidth={1.8} />
+          </button>
           <input
             name="q"
             placeholder="Бараа, брэнд хайх..."
             className="flex-1 bg-transparent font-sans text-sm outline-none placeholder:text-ink-subtle"
           />
-          <button type="submit" aria-label="Зургаар хайх" className="text-brand-pink">
-            <Camera className="w-[18px] h-[18px]" strokeWidth={1.8} />
-          </button>
         </form>
       </div>
 
@@ -266,7 +265,7 @@ export function MobileHome({ products, categories }: { products: P[]; categories
                     </div>
                   )}
                 </div>
-                <span className="w-7 h-7 rounded-full bg-ink text-white flex items-center justify-center shrink-0">
+                <span className="w-7 h-7 rounded-full bg-brand-pink text-white flex items-center justify-center shrink-0">
                   <Plus className="w-3.5 h-3.5" />
                 </span>
               </div>
@@ -340,7 +339,7 @@ export function MobileHome({ products, categories }: { products: P[]; categories
                   </div>
                 )}
               </div>
-              <span className="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center shrink-0">
+              <span className="w-8 h-8 rounded-full bg-brand-pink text-white flex items-center justify-center shrink-0">
                 <Plus className="w-4 h-4" />
               </span>
             </Link>

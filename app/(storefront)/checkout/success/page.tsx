@@ -142,13 +142,14 @@ function SuccessInner() {
       >
         <Link
           href="/shop"
-          className="border-[1.5px] border-ink rounded-pill px-8 py-3.5 text-sm font-semibold"
+          className="border-[1.5px] border-brand-pink text-brand-pink rounded-pill px-8 py-3.5 text-sm font-semibold hover:bg-soft-pink transition"
         >
           ҮРГЭЛЖЛҮҮЛЭН ДЭЛГҮҮРЛЭХ
         </Link>
         <Link
           href="/account/orders"
-          className="bg-ink text-ink-inverse rounded-pill px-8 py-3.5 text-sm font-semibold"
+          className="btn-3d text-white rounded-pill px-8 py-3.5 text-sm font-semibold"
+          style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}
         >
           ЗАХИАЛГА ҮЗЭХ
         </Link>

@@ -235,7 +235,7 @@ export default function CheckoutPage() {
   if (items.length === 0) return <div className="min-h-[60vh]" />;
 
   return (
-    <form onSubmit={submit} className="bg-bg-soft min-h-screen">
+    <form onSubmit={submit} className="bg-white min-h-screen">
       {/* Redirect overlay */}
       <AnimatePresence>
         {loading && (

@@ -195,7 +195,8 @@ export default function NewProductPage() {
 
       <button
         disabled={loading}
-        className="bg-ink text-ink-inverse rounded-pill px-8 py-3.5 text-sm font-semibold tracking-wide disabled:opacity-50"
+        className="btn-3d text-white rounded-pill px-8 py-3.5 text-sm font-semibold tracking-wide disabled:opacity-50"
+        style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}
       >
         {loading ? "ХАДГАЛЖ БАЙНА..." : "ХАДГАЛАХ"}
       </button>

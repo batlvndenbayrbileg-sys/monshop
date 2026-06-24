@@ -249,7 +249,7 @@ export function CartDrawer() {
                     <button
                       type="submit"
                       disabled={applying || !code.trim()}
-                      className="bg-ink text-white rounded-pill px-5 text-sm font-semibold disabled:opacity-40 transition"
+                      className="bg-brand-pink text-white rounded-pill px-5 text-sm font-semibold disabled:opacity-40 hover:opacity-90 transition"
                     >
                       {applying ? "..." : "Хэрэглэх"}
                     </button>

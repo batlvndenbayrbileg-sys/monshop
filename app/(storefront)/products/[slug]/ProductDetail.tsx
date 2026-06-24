@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import { ShoppingBag, Heart, Truck, RotateCcw, Leaf } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCart } from "@/lib/cart-store";
@@ -152,22 +151,7 @@ export function ProductDetail({ product }: { product: Product }) {
             )}
           </div>
 
-          <p className="text-ink-muted leading-relaxed mb-8">{product.description}</p>
-
-          {/* Tags */}
-          {product.tags && product.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-10">
-              {product.tags.map((t) => (
-                <Link
-                  key={t}
-                  href={`/shop?tag=${encodeURIComponent(t)}`}
-                  className="text-xs font-medium border border-line rounded-pill px-3.5 py-1.5 hover:border-brand-pink hover:text-brand-pink transition"
-                >
-                  #{t}
-                </Link>
-              ))}
-            </div>
-          )}
+          <p className="text-ink-muted leading-relaxed mb-10">{product.description}</p>
 
           {/* Color */}
           <div className="mb-8">
@@ -209,7 +193,7 @@ export function ProductDetail({ product }: { product: Product }) {
                     onClick={() => setSize(s)}
                     className={`py-3 border text-sm transition ${
                       size === s
-                        ? "border-ink bg-ink text-ink-inverse"
+                        ? "border-brand-pink bg-brand-pink text-white"
                         : available
                           ? "border-line hover:border-ink"
                           : "border-line-subtle bg-bg-secondary text-ink-faint line-through cursor-not-allowed"

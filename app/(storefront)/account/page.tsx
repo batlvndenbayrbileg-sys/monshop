@@ -1,12 +1,12 @@
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import Link from "next/link";
-import Image from "next/image";
 import {
-  ShoppingBag, Heart, MapPin, Settings, HelpCircle,
+  ShoppingBag, Heart, MapPin, HelpCircle, Bell,
   ChevronRight, ShieldCheck, Pencil,
 } from "lucide-react";
 import { LogoutRow } from "./LogoutRow";
+import { AvatarUpload } from "./AvatarUpload";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +23,7 @@ export default async function AccountPage() {
     { href: "/account/orders", label: "Захиалга", icon: ShoppingBag },
     { href: "/account/addresses", label: "Хаяг", icon: MapPin },
     { href: "/wishlist", label: "Хүсэл", icon: Heart },
-    { href: "/account/settings", label: "Тохиргоо", icon: Settings },
+    { href: "/account/notifications", label: "Мэдэгдэл", icon: Bell },
     { href: "/contact", label: "Тусламж", icon: HelpCircle },
   ];
 
@@ -45,13 +45,7 @@ export default async function AccountPage() {
         <div className="absolute -bottom-12 -left-10 w-44 h-44 rounded-full bg-white/10 pointer-events-none" />
 
         <div className="relative">
-          <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden bg-white ring-4 ring-white/40 shadow-lg flex items-center justify-center">
-            {user.image ? (
-              <Image src={user.image} alt="" fill sizes="96px" className="object-cover" />
-            ) : (
-              <span className="font-serif text-4xl text-brand-pink">{initial}</span>
-            )}
-          </div>
+          <AvatarUpload initialImage={user.image} fallback={initial} />
           <div className="font-serif text-2xl text-white mt-3 leading-tight">{user.name || "Хэрэглэгч"}</div>
           <div className="font-sans text-sm text-white/85 truncate">{user.email}</div>
           {user.role === "ADMIN" && (

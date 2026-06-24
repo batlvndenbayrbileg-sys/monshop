@@ -67,7 +67,7 @@ export default async function CategoriesPage() {
       {/* Desktop */}
       <article className="hidden lg:block bg-white">
       {/* ===== HERO ===== */}
-      <section className="relative bg-soft-pink py-16 lg:py-24 overflow-hidden">
+      <section className="relative bg-white py-16 lg:py-24 overflow-hidden">
         <div className="absolute -top-32 -left-20 w-96 h-96 rounded-full bg-brand-pink/15 blur-3xl drift pointer-events-none" />
         <div className="absolute -bottom-32 right-20 w-96 h-96 rounded-full bg-brand-rose/20 blur-3xl drift pointer-events-none" style={{ animationDelay: "3s" }} />
 
@@ -168,7 +168,7 @@ export default async function CategoriesPage() {
       )}
 
       {/* ===== ALL CATEGORIES GRID ===== */}
-      <section className="bg-bg-soft py-16 lg:py-24">
+      <section className="bg-white py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-3 mb-10">

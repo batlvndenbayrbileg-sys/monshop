@@ -37,7 +37,7 @@ export function MobileCategories({ categories }: { categories: Cat[] }) {
   const rest = categories.slice(1);
 
   return (
-    <div className="lg:hidden min-h-screen bg-[#F5F0EC] pb-28">
+    <div className="lg:hidden min-h-screen bg-white pb-28">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
@@ -131,7 +131,7 @@ export function MobileCategories({ categories }: { categories: Cat[] }) {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="px-5 mt-6"
       >
-        <Link href="/shop" className="flex items-center justify-center gap-2 bg-ink text-white rounded-pill py-4 font-sans text-xs font-semibold tracking-widest uppercase">
+        <Link href="/shop" className="flex items-center justify-center gap-2 text-white rounded-pill py-4 font-sans text-xs font-semibold tracking-widest uppercase" style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}>
           Бүх барааг үзэх <ArrowUpRight className="w-4 h-4" />
         </Link>
       </motion.div>
