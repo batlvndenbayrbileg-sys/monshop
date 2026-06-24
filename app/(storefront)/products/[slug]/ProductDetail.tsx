@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Heart, Truck, RotateCcw, Leaf } from "lucide-react";
+import { ShoppingBag, Heart, Truck, RotateCcw, Leaf, ChevronDown, Droplet, Sparkles, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCart } from "@/lib/cart-store";
 import { formatMNT } from "@/lib/utils";
@@ -80,7 +80,7 @@ export function ProductDetail({ product }: { product: Product }) {
       <div className="grid lg:grid-cols-12 gap-8 lg:gap-20">
         {/* Gallery */}
         <div className="lg:col-span-7">
-          <div className="relative aspect-[4/5] bg-bg-tertiary overflow-hidden mb-3">
+          <div className="relative aspect-[4/5] bg-bg-tertiary overflow-hidden mb-3 rounded-[24px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={imageIdx}
@@ -101,7 +101,7 @@ export function ProductDetail({ product }: { product: Product }) {
               </motion.div>
             </AnimatePresence>
             {product.badge && (
-              <div className="absolute top-5 left-5 bg-bg-primary px-3 py-1.5 text-[10px] font-semibold tracking-ultra uppercase">
+              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur rounded-full px-3 py-1.5 text-[10px] font-semibold tracking-widest uppercase shadow-sm">
                 {product.badge}
               </div>
             )}
@@ -115,8 +115,8 @@ export function ProductDetail({ product }: { product: Product }) {
                 <button
                   key={i}
                   onClick={() => setImageIdx(i)}
-                  className={`relative aspect-square overflow-hidden transition ${
-                    imageIdx === i ? "ring-1 ring-ink" : "opacity-60 hover:opacity-100"
+                  className={`relative aspect-square overflow-hidden rounded-2xl transition ${
+                    imageIdx === i ? "ring-2 ring-brand-pink" : "opacity-60 hover:opacity-100"
                   }`}
                 >
                   <Image src={img} alt="" fill sizes="120px" className="object-cover" />
@@ -166,7 +166,7 @@ export function ProductDetail({ product }: { product: Product }) {
                   onClick={() => setColor(c)}
                   title={c.name}
                   className={`w-10 h-10 rounded-full border-2 transition ${
-                    color.hex === c.hex ? "border-ink scale-[1.08]" : "border-line hover:border-ink-muted"
+                    color.hex === c.hex ? "border-brand-pink scale-[1.08] ring-2 ring-brand-pink/20" : "border-line hover:border-ink-muted"
                   }`}
                   style={{ backgroundColor: c.hex }}
                 />
@@ -175,10 +175,10 @@ export function ProductDetail({ product }: { product: Product }) {
           </div>
 
           {/* Size */}
-          <div className="mb-10 scroll-mt-28" ref={sizeRef}>
+          <div className="mb-8 scroll-mt-28" ref={sizeRef}>
             <div className="flex justify-between items-baseline mb-4">
               <span className="eyebrow text-ink">Хэмжээ</span>
-              <button className="text-xs text-ink-muted link-underline">Хэмжээний заавар</button>
+              {size && <span className="text-xs text-ink-muted">Сонгосон: {size}</span>}
             </div>
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
               {product.sizes.map((s) => {
@@ -191,11 +191,11 @@ export function ProductDetail({ product }: { product: Product }) {
                     key={s}
                     disabled={!available}
                     onClick={() => setSize(s)}
-                    className={`py-3 border text-sm transition ${
+                    className={`py-3 rounded-xl border-2 text-sm font-medium transition ${
                       size === s
-                        ? "border-brand-pink bg-brand-pink text-white"
+                        ? "border-brand-pink bg-brand-pink text-white shadow-sm"
                         : available
-                          ? "border-line hover:border-ink"
+                          ? "border-line hover:border-brand-pink"
                           : "border-line-subtle bg-bg-secondary text-ink-faint line-through cursor-not-allowed"
                     }`}
                   >
@@ -204,6 +204,51 @@ export function ProductDetail({ product }: { product: Product }) {
                 );
               })}
             </div>
+          </div>
+
+          {/* Details accordion — usage + ingredients + shipping */}
+          <div className="mb-8 border-t border-line">
+            <AccordionItem title="Хэрэглэх заавар" defaultOpen icon={Droplet}>
+              <ol className="space-y-2.5">
+                {[
+                  "Цэвэрхэн, хуурайшуулсан арьсандаа бага хэмжээгээр түрхэнэ.",
+                  "Зөөлөн тойруулан массаж хийж бүрэн шингээнэ.",
+                  "Өглөө, орой тогтмол хэрэглэхэд илүү үр дүнтэй.",
+                  "Өдрийн цагт хэрэглэсний дараа нарны тос (SPF) заавал түрхэнэ.",
+                ].map((step, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="w-5 h-5 rounded-full bg-soft-pink text-brand-pink text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                      {i + 1}
+                    </span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </AccordionItem>
+
+            <AccordionItem title="Найрлага & онцлог" icon={Sparkles}>
+              {product.tags && product.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {product.tags.map((t) => (
+                    <span key={t} className="text-[11px] font-medium bg-soft-pink text-brand-pink rounded-full px-3 py-1">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <ul className="space-y-1.5">
+                {["Парабен, сульфатгүй цэвэр найрлага", "Харгислалгүй (cruelty-free) & вегэн", "Dermatologist шалгасан, мэдрэг арьсанд ээлтэй"].map((x) => (
+                  <li key={x} className="flex items-center gap-2">
+                    <ShieldCheck className="w-3.5 h-3.5 text-brand-green shrink-0" /> {x}
+                  </li>
+                ))}
+              </ul>
+            </AccordionItem>
+
+            <AccordionItem title="Хүргэлт & буцаалт" icon={Truck}>
+              Улаанбаатар хотод 24-48 цагт хүргэнэ. 100,000₮-аас дээш захиалгад хүргэлт үнэгүй.
+              Барааг хүлээн авснаас хойш 30 хоногийн дотор асуултгүйгээр буцаах боломжтой.
+            </AccordionItem>
           </div>
 
           {/* CTA - desktop only */}
@@ -264,6 +309,48 @@ export function ProductDetail({ product }: { product: Product }) {
           </motion.button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function AccordionItem({
+  title,
+  icon: Icon,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  icon: any;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="border-b border-line">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-3 py-4 text-left"
+      >
+        <span className="w-9 h-9 rounded-full bg-soft-pink flex items-center justify-center shrink-0">
+          <Icon className="w-[18px] h-[18px] text-brand-pink" strokeWidth={1.7} />
+        </span>
+        <span className="flex-1 font-semibold text-sm">{title}</span>
+        <ChevronDown className={`w-4 h-4 text-ink-subtle transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="pb-5 pl-12 pr-2 text-sm text-ink-muted leading-relaxed">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
