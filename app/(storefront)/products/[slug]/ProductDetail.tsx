@@ -28,7 +28,7 @@ type Product = {
 };
 
 export function ProductDetail({ product }: { product: Product }) {
-  const [color, setColor] = useState(product.colors[0]);
+  const [color, setColor] = useState(product.colors[0] ?? { name: "Үндсэн", hex: "#F8BBD0" });
   const [size, setSize] = useState<string | null>(null);
   const [imageIdx, setImageIdx] = useState(0);
   const add = useCart((s) => s.add);

@@ -40,6 +40,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ data: { status: "succeeded", paymentStatus: "paid" } });
   }
 
+  // A fully-discounted (free) order skips the payment gateway entirely.
+  if (order.total <= 0) {
+    await db.order.updateMany({
+      where: { id: order.id, paymentStatus: { not: "paid" } },
+      data: { paymentStatus: "paid", status: "PAID" },
+    });
+    return NextResponse.json({ data: { status: "succeeded", paymentStatus: "paid" } });
+  }
+
   try {
     // Reuse an existing intent (idempotent) so retries never double-charge.
     const intent = order.paymentIntentId

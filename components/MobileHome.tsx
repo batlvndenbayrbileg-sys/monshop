@@ -137,7 +137,8 @@ export function MobileHome({ products, categories }: { products: P[]; categories
       <div className="flex items-center justify-between px-5 pt-4 pb-3">
         <div className="flex items-center gap-3 min-w-0">
           {user?.image ? (
-            <Image src={user.image} alt="" width={40} height={40} className="w-10 h-10 rounded-full object-cover shrink-0" />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={user.image} alt="" width={40} height={40} className="w-10 h-10 rounded-full object-cover shrink-0" />
           ) : (
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-rose to-brand-pink text-white flex items-center justify-center font-semibold shrink-0">
               {firstName.charAt(0).toUpperCase()}

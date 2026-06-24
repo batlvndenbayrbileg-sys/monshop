@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { cancelOrderAndRestock } from "@/lib/orders";
 
 const STATUSES = ["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"];
 
@@ -14,6 +15,14 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     if (!STATUSES.includes(status)) {
       return NextResponse.json({ error: "Төлөв буруу байна" }, { status: 400 });
     }
+
+    // Cancelling returns reserved stock to inventory (idempotent).
+    if (status === "CANCELLED") {
+      await cancelOrderAndRestock(params.id);
+      const order = await db.order.findUnique({ where: { id: params.id } });
+      return NextResponse.json({ order });
+    }
+
     const order = await db.order.update({
       where: { id: params.id },
       data: { status },

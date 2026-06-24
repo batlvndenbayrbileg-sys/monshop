@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { verifyWireSignature, WIRE_WEBHOOK_IP } from "@/lib/wire";
+import { cancelOrderAndRestock } from "@/lib/orders";
 
 export const dynamic = "force-dynamic";
 
@@ -46,10 +47,11 @@ export async function POST(req: Request) {
           data: { paymentStatus: "paid", status: "PAID" },
         });
       } else if (event.type === "payment_intent.canceled") {
-        await db.order.updateMany({
-          where: { id: orderId, paymentStatus: { not: "paid" } },
-          data: { status: "CANCELLED" },
-        });
+        // Cancel + return reserved stock (idempotent, skips paid orders).
+        const order = await db.order.findUnique({ where: { id: orderId } });
+        if (order && order.paymentStatus !== "paid") {
+          await cancelOrderAndRestock(orderId);
+        }
       }
     }
   } catch (err) {
