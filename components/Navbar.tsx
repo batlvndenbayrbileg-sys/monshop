@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, User, ShoppingBag, Menu, LogOut, Heart, X } from "lucide-react";
+import { Search, User, ShoppingBag, LogOut, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
@@ -20,7 +20,6 @@ const LINKS = [
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const cartCount = useCart((s) => s.count());
   const openCart = useCart((s) => s.open);
@@ -42,8 +41,12 @@ export function Navbar() {
     router.push("/");
   };
 
+  // The mobile home screen has its own greeting header, so hide the global
+  // navbar there. Bottom nav handles mobile navigation everywhere else.
+  const isHome = pathname === "/";
+
   return (
-    <header className="sticky top-0 z-50">
+    <header className={`sticky top-0 z-50 ${isHome ? "hidden lg:block" : ""}`}>
       {/* Wrapper allows floating-pill animation */}
       <motion.div
         animate={{
@@ -65,15 +68,8 @@ export function Navbar() {
           }`}
         >
           <div className="flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 h-16 lg:h-[72px]">
-            {/* Left: menu (mobile) + logo */}
+            {/* Left: logo */}
             <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden glass-orb w-10 h-10 rounded-full flex items-center justify-center"
-                aria-label="Menu"
-              >
-                <Menu className="w-4 h-4" strokeWidth={1.8} />
-              </button>
               <Link href="/" className="flex items-center">
                 <Image src="/logo.png" alt="monshop" width={160} height={48} priority className="h-9 lg:h-11 w-auto object-contain" />
               </Link>
@@ -111,7 +107,7 @@ export function Navbar() {
             <div className="flex items-center gap-1.5 lg:gap-2 shrink-0">
               <Link
                 href="/shop"
-                className="glass-orb w-10 h-10 rounded-full flex items-center justify-center"
+                className="hidden lg:flex glass-orb w-10 h-10 rounded-full items-center justify-center"
                 aria-label="Search"
               >
                 <Search className="w-[16px] h-[16px]" strokeWidth={1.8} />
@@ -227,69 +223,6 @@ export function Navbar() {
           </div>
         </motion.nav>
       </motion.div>
-
-      {/* Mobile drawer */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="lg:hidden fixed inset-0 top-16 bg-bg-deepest/30 backdrop-blur-sm z-40"
-              onClick={() => setMobileOpen(false)}
-            />
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:hidden fixed top-0 bottom-0 left-0 w-[85%] max-w-sm z-50 p-4"
-            >
-              <div className="liquid-glass-pink h-full rounded-3xl p-6 overflow-y-auto relative">
-                <button
-                  onClick={() => setMobileOpen(false)}
-                  className="absolute top-5 right-5 glass-orb w-9 h-9 rounded-full flex items-center justify-center"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-                <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center mb-10">
-                  <Image src="/logo.png" alt="monshop" width={140} height={40} className="h-9 w-auto object-contain" />
-                </Link>
-                <ul className="space-y-1">
-                  {LINKS.map((l, i) => (
-                    <motion.li
-                      key={l.href}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                    >
-                      <Link
-                        href={l.href}
-                        className="block py-3 font-serif text-2xl"
-                        onClick={() => setMobileOpen(false)}
-                      >
-                        {l.label}
-                      </Link>
-                    </motion.li>
-                  ))}
-                </ul>
-                {!user && (
-                  <Link
-                    href="/auth/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="mt-8 btn-3d block text-center rounded-pill py-3 text-sm font-semibold text-white"
-                    style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}
-                  >
-                    Нэвтрэх / Бүртгүүлэх
-                  </Link>
-                )}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </header>
   );
 }

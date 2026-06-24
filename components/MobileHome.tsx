@@ -5,10 +5,11 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { formatMNT } from "@/lib/utils";
 import { useWishlist } from "@/lib/wishlist-store";
+import { useCart } from "@/lib/cart-store";
+import { useAuth } from "@/components/Providers";
 import {
-  Search, Mic, Truck, ShieldCheck, Heart, Lock, Plus,
-  Leaf, FlaskConical, Globe, Star, ChevronRight,
-  Droplet, Sun, Clock, Sparkles,
+  Search, Camera, Bell, Truck, ShieldCheck, Heart, Lock, Plus, ShoppingBag,
+  Leaf, FlaskConical, Globe, Star, ChevronRight, Droplet, Sun, Clock, Sparkles,
 } from "lucide-react";
 
 type P = {
@@ -60,60 +61,155 @@ function HeartBtn({ p, size = "sm" }: { p: P; size?: "sm" | "md" }) {
   );
 }
 
+function HeroPromo({ products }: { products: P[] }) {
+  const slides = [
+    { eyebrow: "Онцгой санал", title: "50% хямдрал!\nГэрэлтэлтээ ав", img: products[0]?.image, bg: "linear-gradient(135deg,#E91E63 0%,#F06292 100%)", tint: "#E91E63" },
+    { eyebrow: "Шинэ ирэлт", title: "Шинэ сийрум\nирлээ", img: products[1]?.image, bg: "linear-gradient(135deg,#D81B60 0%,#F8839E 100%)", tint: "#D81B60" },
+    { eyebrow: "Үнэгүй хүргэлт", title: "100,000₮-аас\nдээш үнэгүй", img: products[2]?.image, bg: "linear-gradient(135deg,#AD1457 0%,#E91E63 100%)", tint: "#AD1457" },
+  ].filter((s) => s.img);
+
+  const [i, setI] = useState(0);
+  const n = slides.length;
+
+  useEffect(() => {
+    if (n <= 1) return;
+    const t = setInterval(() => setI((p) => (p + 1) % n), 3000);
+    return () => clearInterval(t);
+  }, [n]);
+
+  if (n === 0) return null;
+  const s = slides[i];
+
+  return (
+    <div className="relative rounded-[26px] overflow-hidden min-h-[200px]" style={{ background: s.bg }}>
+      <div key={i} className="animate-fade-in">
+        {/* Product image — right side, fading into the gradient */}
+        {s.img && (
+          <div className="absolute inset-y-0 right-0 w-[48%]">
+            <Image src={s.img} alt="" fill sizes="50vw" className="object-cover" />
+            <div className="absolute inset-0" style={{ background: `linear-gradient(90deg, ${s.tint} 0%, ${s.tint}cc 12%, transparent 75%)` }} />
+          </div>
+        )}
+        {/* Text */}
+        <div className="relative z-10 p-6 flex flex-col justify-center min-h-[200px] max-w-[62%]">
+          <div className="font-sans text-[11px] font-semibold tracking-[0.16em] uppercase text-white/80 mb-2">{s.eyebrow}</div>
+          <h2 className="font-serif text-white text-[26px] leading-[1.08] mb-4 whitespace-pre-line">{s.title}</h2>
+          <Link href="/shop" className="self-start bg-white text-brand-pink rounded-pill px-5 py-2 text-[13px] font-semibold shadow-sm">
+            Дэлгүүр
+          </Link>
+        </div>
+      </div>
+
+      {/* Dots */}
+      <div className="absolute bottom-3.5 left-6 flex gap-1.5 z-10">
+        {slides.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => setI(idx)}
+            className={`h-1.5 rounded-full transition-all ${idx === i ? "w-5 bg-white" : "w-1.5 bg-white/50"}`}
+            aria-label={`Слайд ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function MobileHome({ products, categories }: { products: P[]; categories: Cat[] }) {
   const best = products.slice(0, 6);
   const topRated = [...products].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 3);
-  const hero = products[0];
+
+  const { user } = useAuth();
+  const openCart = useCart((s) => s.open);
+  const cartCount = useCart((s) => s.count());
+  const [greeting, setGreeting] = useState("Тавтай морил");
+
+  useEffect(() => {
+    const h = new Date().getHours();
+    setGreeting(h < 12 ? "Өглөөний мэнд" : h < 18 ? "Өдрийн мэнд" : "Оройн мэнд");
+  }, []);
+
+  const firstName = (user?.name || "").trim().split(" ")[0] || "Зочин";
 
   return (
-    <div className="bg-[#FAF6F2] pb-4">
-      {/* Search */}
-      <div className="px-5 pt-3 pb-4">
-        <form action="/shop" className="flex items-center gap-3 bg-white rounded-pill px-4 py-3 shadow-sm">
-          <button type="submit" aria-label="Хайх">
-            <Search className="w-[18px] h-[18px] text-ink-subtle" strokeWidth={1.8} />
+    <div className="bg-white pb-4">
+      {/* Greeting header */}
+      <div className="flex items-center justify-between px-5 pt-4 pb-3">
+        <div className="flex items-center gap-3 min-w-0">
+          {user?.image ? (
+            <Image src={user.image} alt="" width={40} height={40} className="w-10 h-10 rounded-full object-cover shrink-0" />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-rose to-brand-pink text-white flex items-center justify-center font-semibold shrink-0">
+              {firstName.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="min-w-0">
+            <div className="font-sans text-[15px] font-semibold leading-tight flex items-center gap-1">
+              {greeting} <span>👋</span>
+            </div>
+            <div className="font-sans text-[12px] text-ink-subtle truncate">
+              {user ? firstName : "Тавтай морилно уу"}
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2.5 shrink-0">
+          <button onClick={openCart} aria-label="Сагс" className="relative w-10 h-10 rounded-full bg-bg-soft flex items-center justify-center">
+            <ShoppingBag className="w-[18px] h-[18px] text-ink" strokeWidth={1.8} />
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-brand-pink text-white text-[10px] min-w-[17px] h-[17px] px-1 rounded-full flex items-center justify-center font-semibold">
+                {cartCount}
+              </span>
+            )}
           </button>
+          <Link href="/account" aria-label="Профайл" className="w-10 h-10 rounded-full bg-bg-soft flex items-center justify-center">
+            <Bell className="w-[18px] h-[18px] text-ink" strokeWidth={1.8} />
+          </Link>
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="px-5 pb-3">
+        <form action="/shop" className="flex items-center gap-3 bg-bg-soft rounded-pill px-4 py-3">
+          <Search className="w-[18px] h-[18px] text-ink-subtle" strokeWidth={1.8} />
           <input
             name="q"
             placeholder="Бараа, брэнд хайх..."
             className="flex-1 bg-transparent font-sans text-sm outline-none placeholder:text-ink-subtle"
           />
-          <Mic className="w-[18px] h-[18px] text-brand-pink" strokeWidth={1.8} />
+          <button type="submit" aria-label="Зургаар хайх" className="text-brand-pink">
+            <Camera className="w-[18px] h-[18px]" strokeWidth={1.8} />
+          </button>
         </form>
       </div>
 
-      {/* HERO */}
-      <div className="px-5">
-        <div className="relative rounded-[28px] overflow-hidden min-h-[360px] bg-[#EBDDD2]">
-          {/* Product image fills the right side */}
-          {hero?.image && (
-            <div className="absolute inset-y-0 right-0 w-[62%]">
-              <Image src={hero.image} alt="" fill sizes="60vw" className="object-cover" />
-            </div>
-          )}
-          {/* Gradient scrim — solid card colour on the left, fading to reveal the image */}
-          <div
-            className="absolute inset-0"
-            style={{ background: "linear-gradient(90deg, #EBDDD2 0%, #EBDDD2 40%, rgba(235,221,210,0.4) 62%, transparent 80%)" }}
-          />
-          {/* Text */}
-          <div className="relative z-10 p-6 pt-8 max-w-[62%] flex flex-col min-h-[360px]">
-            <div className="font-sans text-[11px] font-semibold tracking-[0.18em] uppercase text-ink-muted mb-3">Шинэ ирэлт</div>
-            <h1 className="font-serif text-[34px] leading-[1.02] tracking-tight mb-3">
-              Байгалийн<br />гэрэлтэлт
-            </h1>
-            <p className="font-sans text-[13px] text-ink-muted leading-relaxed mb-7 max-w-[230px]">
-              Эмнэлзүйгээр батлагдсан, гэрэлтэй эрүүл арьсны төлөө.
-            </p>
-            <Link href="/shop" className="mt-auto inline-flex items-center gap-2 bg-ink text-white rounded-pill pl-5 pr-1.5 py-1.5 font-sans text-xs font-semibold self-start">
-              Худалдан авах
-              <span className="w-7 h-7 rounded-full bg-white text-ink flex items-center justify-center">→</span>
-            </Link>
-          </div>
-        </div>
+      {/* Filter pills */}
+      <div className="flex gap-2 overflow-x-auto no-scrollbar px-5 pb-1">
+        <Link
+          href="/shop"
+          className="shrink-0 rounded-pill px-4 py-2 text-[13px] font-semibold text-white"
+          style={{ background: "linear-gradient(180deg,#f06292 0%,#e91e63 100%)" }}
+        >
+          Бүгд
+        </Link>
+        {categories.slice(0, 6).map((c) => (
+          <Link
+            key={c.slug}
+            href={`/categories/${c.slug}`}
+            className="shrink-0 rounded-pill px-4 py-2 text-[13px] font-medium bg-bg-soft text-ink-muted whitespace-nowrap"
+          >
+            {c.name}
+          </Link>
+        ))}
+      </div>
 
-        {/* Trust row */}
-        <div className="bg-white rounded-[22px] shadow-sm -mt-8 relative z-10 mx-2 px-3 py-4 grid grid-cols-4 gap-1">
+      {/* HERO promo carousel */}
+      <div className="px-5 mt-3">
+        <HeroPromo products={products} />
+      </div>
+
+      {/* Trust row */}
+      <div className="px-5 mt-5">
+        <div className="bg-white rounded-[22px] border border-line shadow-sm px-3 py-4 grid grid-cols-4 gap-1">
           {[
             { icon: Truck, t: "Үнэгүй", s: "хүргэлт" },
             { icon: ShieldCheck, t: "Derma", s: "шалгасан" },
@@ -131,18 +227,20 @@ export function MobileHome({ products, categories }: { products: P[]; categories
         </div>
       </div>
 
-      {/* SHOP BY CATEGORY */}
-      <div className="px-5 mt-8">
-        <SectionHead title="Ангиллаар" href="/categories" />
-        <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5">
+      {/* SHOP BY CATEGORY — circular */}
+      <div className="mt-8">
+        <div className="px-5">
+          <SectionHead title="Ангиллаар" href="/categories" />
+        </div>
+        <div className="flex gap-4 overflow-x-auto no-scrollbar px-5">
           {categories.map((c) => (
-            <Link key={c.slug} href={`/categories/${c.slug}`} className="shrink-0 w-[88px]">
-              <div className="relative w-[88px] h-[88px] rounded-2xl overflow-hidden mb-2 bg-[#F2E6DF]">
+            <Link key={c.slug} href={`/categories/${c.slug}`} className="shrink-0 flex flex-col items-center gap-2 w-[66px]">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-bg-soft ring-1 ring-line">
                 {CAT_IMG[c.slug] && (
-                  <Image src={CAT_IMG[c.slug]} alt={c.name} fill sizes="88px" className="object-cover" />
+                  <Image src={CAT_IMG[c.slug]} alt={c.name} fill sizes="64px" className="object-cover" />
                 )}
               </div>
-              <div className="font-sans text-[11px] text-center font-medium truncate">{c.name}</div>
+              <div className="font-sans text-[11px] text-center font-medium leading-tight w-full truncate">{c.name}</div>
             </Link>
           ))}
         </div>

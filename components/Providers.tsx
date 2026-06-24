@@ -3,7 +3,7 @@
 import { Toaster } from "react-hot-toast";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-type User = { id: string; email: string; name: string | null; role: string } | null;
+type User = { id: string; email: string; name: string | null; role: string; image?: string | null } | null;
 
 const AuthContext = createContext<{
   user: User;
