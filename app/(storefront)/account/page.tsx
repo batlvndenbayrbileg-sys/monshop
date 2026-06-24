@@ -1,72 +1,83 @@
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { formatMNT } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingBag, Heart, MapPin, Settings, ChevronRight, ShieldCheck } from "lucide-react";
+import {
+  ShoppingBag, Heart, MapPin, Settings, HelpCircle,
+  ChevronRight, ShieldCheck, Pencil,
+} from "lucide-react";
 import { LogoutRow } from "./LogoutRow";
 
 export const dynamic = "force-dynamic";
 
 export default async function AccountPage() {
   const user = (await getCurrentUser())!;
-  const [orderCount, totalSpent] = await Promise.all([
+  const [orderCount, addressCount] = await Promise.all([
     db.order.count({ where: { userId: user.id } }),
-    db.order.aggregate({
-      where: { userId: user.id, status: { in: ["PAID", "SHIPPED", "DELIVERED"] } },
-      _sum: { total: true },
-    }),
+    db.address.count({ where: { userId: user.id } }),
   ]);
 
   const initial = (user.name || user.email)[0]?.toUpperCase();
+
+  const quick = [
+    { href: "/account/orders", label: "Захиалга", icon: ShoppingBag },
+    { href: "/account/addresses", label: "Хаяг", icon: MapPin },
+    { href: "/wishlist", label: "Хүсэл", icon: Heart },
+    { href: "/account/settings", label: "Тохиргоо", icon: Settings },
+    { href: "/contact", label: "Тусламж", icon: HelpCircle },
+  ];
+
   const menu = [
+    { href: "/account/settings", label: "Профайл засах", desc: "Нэр, мэдээлэл", icon: Pencil },
+    { href: "/account/addresses", label: "Хүргэлтийн хаяг", desc: `${addressCount} хадгалсан`, icon: MapPin },
     { href: "/account/orders", label: "Миний захиалга", desc: `${orderCount} захиалга`, icon: ShoppingBag },
-    { href: "/wishlist", label: "Хүслийн жагсаалт", desc: "Хадгалсан бараа", icon: Heart },
-    { href: "/account/addresses", label: "Хүргэлтийн хаяг", desc: "Хаягаа удирдах", icon: MapPin },
-    { href: "/account/settings", label: "Тохиргоо", desc: "Профайл, аюулгүй байдал", icon: Settings },
+    { href: "/contact", label: "Тусламж & FAQ", desc: "Холбоо барих", icon: HelpCircle },
   ];
 
   return (
     <div>
-      {/* ===== Profile header card ===== */}
-      <div className="relative rounded-[26px] overflow-hidden p-6 mb-5"
-        style={{ background: "linear-gradient(135deg, #EBDDD2 0%, #F2E7DD 55%, #EFE0E0 100%)" }}>
-        <div className="flex items-center gap-4">
-          <div className="relative w-16 h-16 rounded-full overflow-hidden bg-white shadow-md shrink-0 flex items-center justify-center">
-            {user.image ? (
-              <Image src={user.image} alt="" fill sizes="64px" className="object-cover" />
-            ) : (
-              <span className="font-serif text-2xl text-brand-pink">{initial}</span>
-            )}
-          </div>
-          <div className="min-w-0">
-            <div className="font-serif text-2xl leading-tight truncate">{user.name || "Хэрэглэгч"}</div>
-            <div className="font-sans text-sm text-ink-muted truncate">{user.email}</div>
-            {user.role === "ADMIN" && (
-              <span className="inline-flex items-center gap-1 mt-1.5 bg-ink text-white rounded-full px-2.5 py-0.5 text-[10px] font-semibold">
-                <ShieldCheck className="w-3 h-3" /> Админ
-              </span>
-            )}
-          </div>
-        </div>
+      {/* ===== Coral profile header ===== */}
+      <div
+        className="relative rounded-[28px] overflow-hidden px-6 pt-8 pb-9 text-center"
+        style={{ background: "linear-gradient(150deg, #F06292 0%, #E91E63 100%)" }}
+      >
+        <div className="absolute -top-10 -right-8 w-40 h-40 rounded-full bg-white/10 pointer-events-none" />
+        <div className="absolute -bottom-12 -left-10 w-44 h-44 rounded-full bg-white/10 pointer-events-none" />
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-3 mt-5">
-          <div className="bg-white/70 backdrop-blur rounded-2xl px-4 py-3">
-            <div className="font-sans text-[11px] text-ink-muted">Захиалга</div>
-            <div className="font-serif text-2xl">{orderCount}</div>
+        <div className="relative">
+          <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden bg-white ring-4 ring-white/40 shadow-lg flex items-center justify-center">
+            {user.image ? (
+              <Image src={user.image} alt="" fill sizes="96px" className="object-cover" />
+            ) : (
+              <span className="font-serif text-4xl text-brand-pink">{initial}</span>
+            )}
           </div>
-          <div className="bg-white/70 backdrop-blur rounded-2xl px-4 py-3">
-            <div className="font-sans text-[11px] text-ink-muted">Нийт зарцуулсан</div>
-            <div className="font-serif text-2xl">{formatMNT(totalSpent._sum.total ?? 0)}</div>
-          </div>
+          <div className="font-serif text-2xl text-white mt-3 leading-tight">{user.name || "Хэрэглэгч"}</div>
+          <div className="font-sans text-sm text-white/85 truncate">{user.email}</div>
+          {user.role === "ADMIN" && (
+            <span className="inline-flex items-center gap-1 mt-2 bg-white/20 text-white rounded-full px-3 py-0.5 text-[11px] font-semibold backdrop-blur">
+              <ShieldCheck className="w-3 h-3" /> Админ
+            </span>
+          )}
         </div>
       </div>
 
+      {/* ===== Quick actions row (overlaps header) ===== */}
+      <div className="bg-white rounded-[22px] border border-line-subtle shadow-sm -mt-6 relative z-10 mx-3 px-1.5 py-4 grid grid-cols-5 gap-1">
+        {quick.map((q) => (
+          <Link key={q.href} href={q.href} className="flex flex-col items-center gap-1.5 py-1">
+            <span className="w-11 h-11 rounded-full bg-bg-soft flex items-center justify-center">
+              <q.icon className="w-[18px] h-[18px] text-brand-pink" strokeWidth={1.8} />
+            </span>
+            <span className="font-sans text-[10.5px] text-ink-muted">{q.label}</span>
+          </Link>
+        ))}
+      </div>
+
       {/* ===== Menu list ===== */}
-      <div className="bg-white rounded-[22px] border border-line-subtle overflow-hidden divide-y divide-line-subtle">
+      <div className="bg-white rounded-[22px] border border-line-subtle overflow-hidden divide-y divide-line-subtle mt-5">
         {menu.map((m) => (
-          <Link key={m.href} href={m.href} className="flex items-center gap-4 px-5 py-4 hover:bg-bg-soft transition">
+          <Link key={m.label} href={m.href} className="flex items-center gap-4 px-5 py-4 hover:bg-bg-soft transition">
             <span className="w-10 h-10 rounded-full bg-bg-soft flex items-center justify-center shrink-0">
               <m.icon className="w-[18px] h-[18px] text-brand-pink" strokeWidth={1.8} />
             </span>
@@ -91,18 +102,9 @@ export default async function AccountPage() {
         )}
       </div>
 
-      {/* Logout */}
-      <div className="mt-4">
+      {/* ===== Logout ===== */}
+      <div className="mt-5">
         <LogoutRow />
-      </div>
-
-      {/* Promo (desktop has more room) */}
-      <div className="hidden lg:block mt-6 bg-white border border-line rounded-3xl p-8">
-        <h2 className="font-serif text-2xl mb-2">Шинэ ирэлт</h2>
-        <p className="text-sm text-ink-muted mb-5">Хавар 2026 коллекц — шинэ загвар, шинэ найрлага.</p>
-        <Link href="/shop" className="inline-block bg-ink text-white rounded-pill px-6 py-3 text-sm font-semibold">
-          Үзэх →
-        </Link>
       </div>
     </div>
   );

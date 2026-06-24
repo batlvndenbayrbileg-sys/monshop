@@ -18,7 +18,8 @@ export function LogoutRow() {
   return (
     <button
       onClick={logout}
-      className="w-full flex items-center justify-center gap-2 bg-white border border-line-subtle rounded-pill py-3.5 text-sm font-semibold text-state-sale hover:bg-bg-soft transition"
+      className="btn-3d w-full flex items-center justify-center gap-2 rounded-pill py-3.5 text-sm font-semibold text-white transition"
+      style={{ background: "linear-gradient(180deg, #f06292 0%, #e91e63 100%)" }}
     >
       <LogOut className="w-4 h-4" /> Гарах
     </button>

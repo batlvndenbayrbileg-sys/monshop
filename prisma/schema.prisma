@@ -28,6 +28,7 @@ model Address {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String?  // Гэр | Ажил | Бусад
   name      String   // Recipient name
   phone     String
   city      String

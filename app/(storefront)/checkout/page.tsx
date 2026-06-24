@@ -34,6 +34,18 @@ type Form = {
   notes: string;
 };
 
+type SavedAddress = {
+  id: string;
+  label: string | null;
+  name: string;
+  phone: string;
+  city: string;
+  district: string;
+  street: string;
+  zip: string | null;
+  isDefault: boolean;
+};
+
 const phoneRe = /^\d{8}$/;
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -81,6 +93,11 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
 
+  const [addresses, setAddresses] = useState<SavedAddress[]>([]);
+  const [selectedAddr, setSelectedAddr] = useState<string | null>(null);
+  const [addrMode, setAddrMode] = useState<"saved" | "new">("new");
+  const [saveAddr, setSaveAddr] = useState(true);
+
   const errors = useMemo(() => validate(form), [form]);
 
   useEffect(() => {
@@ -88,6 +105,42 @@ export default function CheckoutPage() {
       setForm((f) => ({ ...f, email: f.email || user.email, shippingName: f.shippingName || user.name || "" }));
     }
   }, [user]);
+
+  // Load the user's saved addresses and preselect the default one.
+  useEffect(() => {
+    if (!user) return;
+    fetch("/api/addresses")
+      .then((r) => r.json())
+      .then((j) => {
+        const list: SavedAddress[] = j.addresses ?? [];
+        setAddresses(list);
+        if (list.length > 0) {
+          setAddrMode("saved");
+          pickAddress(list.find((a) => a.isDefault) ?? list[0]);
+        }
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  const pickAddress = (a: SavedAddress) => {
+    setSelectedAddr(a.id);
+    setForm((f) => ({
+      ...f,
+      shippingName: a.name,
+      shippingPhone: a.phone,
+      shippingCity: a.city,
+      shippingDistrict: a.district,
+      shippingStreet: a.street,
+      phone: f.phone || a.phone,
+    }));
+  };
+
+  const startNewAddress = () => {
+    setAddrMode("new");
+    setSelectedAddr(null);
+    setForm((f) => ({ ...f, shippingName: user?.name || "", shippingPhone: "", shippingDistrict: "", shippingStreet: "" }));
+  };
 
   useEffect(() => {
     if (items.length === 0 && !loading) router.replace("/shop");
@@ -136,6 +189,23 @@ export default function CheckoutPage() {
       }
 
       const order = j.order;
+
+      // Save a freshly-typed address to the user's address book (best-effort).
+      if (user && addrMode === "new" && saveAddr) {
+        fetch("/api/addresses", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.shippingName,
+            phone: form.shippingPhone,
+            city: form.shippingCity,
+            district: form.shippingDistrict,
+            street: form.shippingStreet,
+            isDefault: addresses.length === 0,
+          }),
+        }).catch(() => {});
+      }
+
       const pr = await fetch("/api/payments/intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -254,45 +324,119 @@ export default function CheckoutPage() {
 
             {/* Shipping */}
             <Card icon={<MapPin className="w-4 h-4" />} step={2} title="Хүргэлтийн хаяг">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <Field
-                  label="Хүлээн авагчийн нэр" name="shippingName" autoComplete="name"
-                  placeholder="Овог нэр"
-                  value={form.shippingName} onChange={set("shippingName")} onBlur={blur("shippingName")} error={err("shippingName")}
-                />
-                <Field
-                  label="Утас" name="shippingPhone" type="tel" inputMode="numeric" maxLength={8} digitsOnly
-                  placeholder="99112233"
-                  value={form.shippingPhone} onChange={set("shippingPhone")} onBlur={blur("shippingPhone")} error={err("shippingPhone")}
-                />
-                <Field
-                  label="Хот / аймаг" name="shippingCity"
-                  value={form.shippingCity} onChange={set("shippingCity")} onBlur={blur("shippingCity")} error={err("shippingCity")}
-                />
-                <Field
-                  label="Дүүрэг / сум" name="shippingDistrict"
-                  placeholder="ж: Сүхбаатар"
-                  value={form.shippingDistrict} onChange={set("shippingDistrict")} onBlur={blur("shippingDistrict")} error={err("shippingDistrict")}
-                />
-                <div className="sm:col-span-2">
-                  <Field
-                    label="Дэлгэрэнгүй хаяг" name="shippingStreet"
-                    placeholder="Хороо, гудамж, байр, тоот"
-                    value={form.shippingStreet} onChange={set("shippingStreet")} onBlur={blur("shippingStreet")} error={err("shippingStreet")}
-                  />
+              {/* Saved address picker */}
+              {user && addresses.length > 0 && addrMode === "saved" && (
+                <div className="space-y-2.5 mb-2">
+                  {addresses.map((a) => (
+                    <button
+                      type="button"
+                      key={a.id}
+                      onClick={() => pickAddress(a)}
+                      className={`w-full text-left rounded-2xl border-2 p-3.5 flex gap-3 transition ${
+                        selectedAddr === a.id ? "border-brand-pink bg-soft-pink" : "border-line hover:border-ink-muted"
+                      }`}
+                    >
+                      <span
+                        className={`w-5 h-5 rounded-full border-2 shrink-0 mt-0.5 flex items-center justify-center ${
+                          selectedAddr === a.id ? "border-brand-pink" : "border-line"
+                        }`}
+                      >
+                        {selectedAddr === a.id && <span className="w-2.5 h-2.5 rounded-full bg-brand-pink" />}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-sm">{a.label || "Хаяг"}</span>
+                          {a.isDefault && (
+                            <span className="text-[10px] font-semibold text-brand-pink bg-brand-pink/10 rounded-full px-2 py-0.5">Үндсэн</span>
+                          )}
+                        </div>
+                        <div className="text-sm">{a.name} · {a.phone}</div>
+                        <div className="text-xs text-ink-muted mt-0.5 leading-relaxed">
+                          {a.city}, {a.district}, {a.street}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={startNewAddress}
+                    className="w-full border-2 border-dashed border-line rounded-2xl py-3 flex items-center justify-center gap-1.5 text-sm font-semibold text-ink-muted hover:border-brand-pink hover:text-brand-pink transition"
+                  >
+                    <span className="text-base leading-none">＋</span> Шинэ хаяг нэмэх
+                  </button>
                 </div>
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-semibold tracking-wider uppercase text-ink-muted mb-1.5">
-                    Нэмэлт тэмдэглэл (сонголтоор)
-                  </label>
-                  <textarea
-                    value={form.notes}
-                    onChange={(e) => set("notes")(e.target.value)}
-                    rows={2}
-                    placeholder="Хүргэлтийн талаар тусгай хүсэлт…"
-                    className="w-full bg-white border border-line rounded-2xl px-4 py-3 text-[15px] focus:border-brand-pink focus:ring-4 focus:ring-brand-pink/10 outline-none transition resize-none"
-                  />
-                </div>
+              )}
+
+              {/* Manual entry */}
+              {addrMode === "new" && (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <Field
+                      label="Хүлээн авагчийн нэр" name="shippingName" autoComplete="name"
+                      placeholder="Овог нэр"
+                      value={form.shippingName} onChange={set("shippingName")} onBlur={blur("shippingName")} error={err("shippingName")}
+                    />
+                    <Field
+                      label="Утас" name="shippingPhone" type="tel" inputMode="numeric" maxLength={8} digitsOnly
+                      placeholder="99112233"
+                      value={form.shippingPhone} onChange={set("shippingPhone")} onBlur={blur("shippingPhone")} error={err("shippingPhone")}
+                    />
+                    <Field
+                      label="Хот / аймаг" name="shippingCity"
+                      value={form.shippingCity} onChange={set("shippingCity")} onBlur={blur("shippingCity")} error={err("shippingCity")}
+                    />
+                    <Field
+                      label="Дүүрэг / сум" name="shippingDistrict"
+                      placeholder="ж: Сүхбаатар"
+                      value={form.shippingDistrict} onChange={set("shippingDistrict")} onBlur={blur("shippingDistrict")} error={err("shippingDistrict")}
+                    />
+                    <div className="sm:col-span-2">
+                      <Field
+                        label="Дэлгэрэнгүй хаяг" name="shippingStreet"
+                        placeholder="Хороо, гудамж, байр, тоот"
+                        value={form.shippingStreet} onChange={set("shippingStreet")} onBlur={blur("shippingStreet")} error={err("shippingStreet")}
+                      />
+                    </div>
+                  </div>
+
+                  {user && (
+                    <label className="flex items-center gap-2 mt-3 text-sm text-ink-muted cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={saveAddr}
+                        onChange={(e) => setSaveAddr(e.target.checked)}
+                        className="w-4 h-4 accent-brand-pink"
+                      />
+                      Энэ хаягийг хадгалах
+                    </label>
+                  )}
+                  {user && addresses.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAddrMode("saved");
+                        pickAddress(addresses.find((a) => a.isDefault) ?? addresses[0]);
+                      }}
+                      className="mt-3 text-sm font-semibold text-brand-pink"
+                    >
+                      ← Хадгалсан хаягаас сонгох
+                    </button>
+                  )}
+                </>
+              )}
+
+              {/* Notes */}
+              <div className="mt-4">
+                <label className="block text-[11px] font-semibold tracking-wider uppercase text-ink-muted mb-1.5">
+                  Нэмэлт тэмдэглэл (сонголтоор)
+                </label>
+                <textarea
+                  value={form.notes}
+                  onChange={(e) => set("notes")(e.target.value)}
+                  rows={2}
+                  placeholder="Хүргэлтийн талаар тусгай хүсэлт…"
+                  className="w-full bg-white border border-line rounded-2xl px-4 py-3 text-[15px] focus:border-brand-pink focus:ring-4 focus:ring-brand-pink/10 outline-none transition resize-none"
+                />
               </div>
             </Card>
 
